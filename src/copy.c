@@ -11,6 +11,7 @@ Int *copyInt(Int *);
 Bool *copyBool(Bool *);
 Clsr *copyClsr(Clsr *);
 ClsrRec *copyClsrRec(ClsrRec *);
+Consv *copyConsv(Consv *);
 Env *copyEnv(Env *);
 Val *copyVal(Val *);
 Var *copyVar(Var *);
@@ -20,6 +21,8 @@ Let *copyLet(Let *);
 Fun *copyFun(Fun *);
 App *copyApp(App *);
 LetRec *copyLetRec(LetRec *);
+Conse *copyConse(Conse *);
+Match *copyMatch(Match *);
 Exp *copyExp(Exp *);
 
 
@@ -29,9 +32,6 @@ Int *copyInt(Int *sample){
 #endif
     Int *ob = (Int *)malloc(sizeof(Int));
     ob->i = sample->i;
-#ifdef DEBUG
-    printf("copyInt end\n");
-#endif
     return ob;
 }
 
@@ -41,9 +41,6 @@ Bool *copyBool(Bool *sample){
 #endif
     Bool *ob = (Bool *)malloc(sizeof(Bool));
     ob->b = sample->b;
-#ifdef DEBUG
-    printf("copyBool end\n");
-#endif
     return ob;
 }
 
@@ -55,9 +52,6 @@ Clsr *copyClsr(Clsr *sample){
     ob->env_ = copyEnv(sample->env_);
     ob->arg = copyVar(sample->arg);
     ob->exp_ = copyExp(sample->exp_);
-#ifdef DEBUG
-    printf("copyClsr end\n");
-#endif
     return ob;
 }
 
@@ -70,9 +64,16 @@ ClsrRec *copyClsrRec(ClsrRec *sample){
     ob->fun = copyVar(sample->fun);
     ob->arg = copyVar(sample->arg);
     ob->exp_ = copyExp(sample->exp_);
+    return ob;
+}
+
+Consv *copyConsv(Consv *sample){
 #ifdef DEBUG
-    printf("copyClsrRec end\n");
+    printf("copyConsv start\n");
 #endif
+    Consv *ob = (Consv *)malloc(sizeof(Consv));
+    ob->val1_ = copyVal(sample->val1_);
+    ob->val2_ = copyVal(sample->val2_);
     return ob;
 }
 
@@ -85,9 +86,6 @@ Env *copyEnv(Env *sample){
     ob->var_ = copyVar(sample->var_);
     ob->val_ = copyVal(sample->val_);
     ob->prev = copyEnv(sample->prev);
-#ifdef DEBUG
-    printf("copyEnv end\n");
-#endif
     return ob;
 }
 
@@ -103,12 +101,11 @@ Val *copyVal(Val *sample){
         ob->u.bool_ = copyBool(sample->u.bool_);
     }else if(ob->val_type==CLSR){
         ob->u.clsr_ = copyClsr(sample->u.clsr_);
-    }else{
+    }else if(ob->val_type==CLSRREC){
         ob->u.clsrrec_ = copyClsrRec(sample->u.clsrrec_);
+    }else if(ob->val_type==CONS_){
+        ob->u.consv_ = copyConsv(sample->u.consv_);
     }
-#ifdef DEBUG
-    printf("copyVal end\n");
-#endif
     return ob;
 }
 
@@ -119,9 +116,6 @@ Var *copyVar(Var *sample){
     Var *ob = (Var *)malloc(sizeof(Var));
     ob->var_name = (char *)malloc(sizeof(char)*(strlen(sample->var_name)+1));
     strcpy(ob->var_name, sample->var_name);
-#ifdef DEBUG
-    printf("copyVar end\n");
-#endif
     return ob;
 };
 
@@ -133,9 +127,6 @@ Op *copyOp(Op *sample){
     ob->op_type = sample->op_type;
     ob->exp1_ = copyExp(sample->exp1_);
     ob->exp2_ = copyExp(sample->exp2_);
-#ifdef DEBUG
-    printf("copyOp end\n");
-#endif
     return ob;
 }
 
@@ -147,9 +138,6 @@ If *copyIf(If *sample){
     ob->exp1_ = copyExp(sample->exp1_);
     ob->exp2_ = copyExp(sample->exp2_);
     ob->exp3_ = copyExp(sample->exp3_);
-#ifdef DEBUG
-    printf("copyIf end\n");
-#endif
     return ob;
 }
 
@@ -161,9 +149,6 @@ Let *copyLet(Let *sample){
     ob->var_ = copyVar(sample->var_);
     ob->exp1_ = copyExp(sample->exp1_);
     ob->exp2_ = copyExp(sample->exp2_);
-#ifdef DEBUG
-    printf("copyLet end\n");
-#endif
     return ob;
 }
 
@@ -174,9 +159,6 @@ Fun *copyFun(Fun *sample){
     Fun *ob = (Fun *)malloc(sizeof(Fun));
     ob->arg = copyVar(sample->arg);
     ob->exp_ = copyExp(sample->exp_);
-#ifdef DEBUG
-    printf("copyFun end\n");
-#endif
     return ob;
 }
 
@@ -187,9 +169,6 @@ App *copyApp(App *sample){
     App *ob = (App *)malloc(sizeof(App));
     ob->exp1_ = copyExp(sample->exp1_);
     ob->exp2_ = copyExp(sample->exp2_);
-#ifdef DEBUG
-    printf("copyApp end\n");
-#endif
     return ob;
 }
 
@@ -202,9 +181,29 @@ LetRec *copyLetRec(LetRec *sample){
     ob->arg = copyVar(sample->arg);
     ob->exp1_ = copyExp(sample->exp1_);
     ob->exp2_ = copyExp(sample->exp2_);
+    return ob;
+}
+
+Conse *copyConse(Conse *sample){
 #ifdef DEBUG
-    printf("copyLetRec end\n");
+    printf("copyConse start\n");
 #endif
+    Conse *ob = (Conse *)malloc(sizeof(Conse));
+    ob->exp1_ = copyExp(sample->exp1_);
+    ob->exp2_ = copyExp(sample->exp2_);
+    return ob;
+}
+
+Match *copyMatch(Match *sample){
+#ifdef DEBUG
+    printf("copyMatch start\n");
+#endif
+    Match *ob = (Match *)malloc(sizeof(Match));
+    ob->exp1_ = copyExp(sample->exp1_);
+    ob->x = copyVar(sample->x);
+    ob->y = copyVar(sample->y);
+    ob->exp2_ = copyExp(sample->exp2_);
+    ob->exp3_ = copyExp(sample->exp3_);
     return ob;
 }
 
@@ -222,9 +221,8 @@ Exp *copyExp(Exp *sample){
     else if(ob->exp_type==LET)ob->u.let_ = copyLet(sample->u.let_);
     else if(ob->exp_type==FUN)ob->u.fun_ = copyFun(sample->u.fun_);
     else if(ob->exp_type==APP)ob->u.app_ = copyApp(sample->u.app_);
-    else ob->u.letrec_ = copyLetRec(sample->u.letrec_);
-#ifdef DEBUG
-    printf("copyExp end\n");
-#endif
+    else if(ob->exp_type==LETREC)ob->u.letrec_ = copyLetRec(sample->u.letrec_);
+    else if(ob->exp_type==CONS)ob->u.conse_ = copyConse(sample->u.conse_);
+    else if(ob->exp_type==MATCH)ob->u.match_ = copyMatch(sample->u.match_);
     return ob;
 }

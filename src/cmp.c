@@ -1,10 +1,13 @@
 #include <string.h>
 #include "param.h"
 
+//#define DEBUG
+
 int cmpInt(Int *,Int *);
 int cmpBool(Bool *,Bool *);
 int cmpClsr(Clsr *,Clsr *);
 int cmpClsrRec(ClsrRec *,ClsrRec *);
+int cmpConsv(Consv *, Consv *);
 int cmpEnv(Env *,Env *);
 int cmpVal(Val *,Val *);
 int cmpVar(Var *,Var *);
@@ -16,6 +19,10 @@ int cmpApp(App *,App *);
 int cmpLetRec(LetRec *,LetRec *);
 int cmpExp(Exp *,Exp *);
 
+
+
+#ifdef DEBUG
+#include <stdio.h>
 void writeInt(Int *);
 void writeBool(Bool *);
 void writeClsr(Clsr *);
@@ -30,11 +37,6 @@ void writeFun(Fun *);
 void writeApp(App *);
 void writeLetRec(LetRec *);
 void writeExp(Exp *);
-
-
-//#define DEBUG
-#ifdef DEBUG
-#include <stdio.h>
 #endif
 
 
@@ -89,6 +91,12 @@ int cmpClsrRec(ClsrRec *ob1, ClsrRec *ob2){
     return 0;
 }
 
+int cmpConsv(Consv *ob1, Consv *ob2){
+    if(cmpVal(ob1->val1_,ob2->val1_))return 1;
+    if(cmpVal(ob1->val2_,ob2->val2_))return 1;
+    return 0;
+}
+
 int cmpEnv(Env *ob1, Env *ob2){
 #ifdef DEBUG
     printf("cmpEnv: ");
@@ -109,7 +117,9 @@ int cmpVal(Val *ob1, Val *ob2){
     if(ob1->val_type==INT_)return cmpInt(ob1->u.int_,ob2->u.int_);
     if(ob1->val_type==BOOL_)return cmpBool(ob1->u.bool_,ob2->u.bool_);
     if(ob1->val_type==CLSR)return cmpClsr(ob1->u.clsr_,ob2->u.clsr_);
-    return cmpClsrRec(ob1->u.clsrrec_,ob2->u.clsrrec_);
+    if(ob1->val_type==CLSRREC)cmpClsrRec(ob1->u.clsrrec_,ob2->u.clsrrec_);
+    if(ob1->val_type==CONS_)cmpConsv(ob1->u.consv_,ob2->u.consv_);
+    return 0;
 }
 
 int cmpVar(Var *ob1, Var *ob2){
@@ -206,6 +216,21 @@ int cmpLetRec(LetRec *ob1, LetRec *ob2){
     return 0;
 }
 
+int cmpConse(Conse *ob1, Conse *ob2){
+    if(cmpExp(ob1->exp1_,ob2->exp1_))return 1;
+    if(cmpExp(ob1->exp2_,ob2->exp2_))return 1;
+    return 0;
+}
+
+int cmpMatch(Match *ob1, Match *ob2){
+    if(cmpExp(ob1->exp1_,ob2->exp1_))return 1;
+    if(cmpExp(ob1->exp2_,ob2->exp2_))return 1;
+    if(cmpVar(ob1->x,ob2->x))return 1;
+    if(cmpVar(ob1->y,ob2->y))return 1;
+    if(cmpExp(ob1->exp3_,ob2->exp3_))return 1;
+    return 0;
+}
+
 int cmpExp(Exp *ob1, Exp *ob2){
     if(ob1->exp_type!=ob2->exp_type)return 1;
     if(ob1->exp_type==INT)return cmpInt(ob1->u.int_,ob2->u.int_);
@@ -216,5 +241,8 @@ int cmpExp(Exp *ob1, Exp *ob2){
     if(ob1->exp_type==LET)return cmpLet(ob1->u.let_,ob2->u.let_);
     if(ob1->exp_type==FUN)return cmpFun(ob1->u.fun_,ob2->u.fun_);
     if(ob1->exp_type==APP)return cmpApp(ob1->u.app_,ob2->u.app_);
-    return cmpLetRec(ob1->u.letrec_,ob2->u.letrec_);
+    if(ob1->exp_type==LETREC)cmpLetRec(ob1->u.letrec_,ob2->u.letrec_);
+    if(ob1->exp_type==CONS)cmpConse(ob1->u.conse_,ob2->u.conse_);
+    if(ob1->exp_type==MATCH)cmpMatch(ob1->u.match_,ob2->u.match_);
+    return 0;
 }

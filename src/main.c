@@ -30,14 +30,13 @@ int main(int argc, char *argv[]){
 #endif
 
 
-    /*
     Val *result;
     if(cncl_ob->cncl_type == INFR){
         result = copyVal(cncl_ob->u.infr_->val_);
     }else{
         result = copyVal(cncl_ob->u.eval_->val_);
     }
-    */
+    printf("%d\n\n",cmpVal(result,result));
 
 
 #ifdef DEBUG
