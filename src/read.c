@@ -173,12 +173,10 @@ Env *readEnv(char *str){
         str+=strspn(str," ");
         env_tmp = readEnv(tmp1);
     }
-    char *str1 = strtok(str,"=");
-    char *str2 = strtok(NULL,"=");
-    //char *str1 = str;
-    //char *str2 = strchr(str1,'=');
-    //*str2 = '\0';
-    //str2++;
+    char *str1 = str;
+    char *str2 = strchr(str1,'=');
+    *str2 = '\0';
+    str2++;
     str2+=strspn(str2," ");
 
 #ifdef DEBUG
