@@ -107,10 +107,10 @@ void writeOp(Op *ob){
     char paren1 = 0;
     char paren2 = 0;
 
-    if(ob->exp1_->exp_type==IF || ob->exp1_->exp_type==LET || ob->exp1_->exp_type==LETREC){
+    if(ob->exp1_->exp_type==IF || ob->exp1_->exp_type==LET || ob->exp1_->exp_type==LETREC || ob->exp1_->exp_type==MATCH){
         paren1 = 1;
     }
-    if(ob->exp2_->exp_type==IF || ob->exp2_->exp_type==LET || ob->exp2_->exp_type==LETREC){
+    if(ob->exp2_->exp_type==IF || ob->exp2_->exp_type==LET || ob->exp2_->exp_type==LETREC || ob->exp2_->exp_type==MATCH){
         paren2 = 1;
     }
     if(ob->op_type==TIMES && ob->exp1_->exp_type==OP){
@@ -174,8 +174,8 @@ void writeApp(App *ob){
     char paren1 = 0;
     char paren2 = 0;
 
-    if(ob->exp1_->exp_type == IF || ob->exp1_->exp_type == LET || ob->exp1_->exp_type == FUN || ob->exp1_->exp_type == LETREC)paren1 = 1;
-    if(ob->exp2_->exp_type == OP || ob->exp2_->exp_type == IF || ob->exp2_->exp_type == LET || ob->exp2_->exp_type == FUN || ob->exp2_->exp_type == LETREC || ob->exp2_->exp_type == APP)paren2 = 1;
+    if(ob->exp1_->exp_type == IF || ob->exp1_->exp_type == LET || ob->exp1_->exp_type == FUN || ob->exp1_->exp_type == LETREC || ob->exp1_->exp_type == MATCH)paren1 = 1;
+    if(ob->exp2_->exp_type == OP || ob->exp2_->exp_type == IF || ob->exp2_->exp_type == LET || ob->exp2_->exp_type == FUN || ob->exp2_->exp_type == LETREC || ob->exp2_->exp_type == APP || ob->exp2_->exp_type == CONS || ob->exp2_->exp_type == MATCH)paren2 = 1;
 
     if(paren1)printf("(");
     writeExp(ob->exp1_);

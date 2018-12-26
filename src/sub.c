@@ -15,9 +15,11 @@ void ind(int d){
 void tree(int d){
     int i;
     for(i=0;i<d;i++){
+    printf("\x1b[%dm",(i%6)+31);
         if(i<d-1)printf("│ ");
         else printf("├─");
     }
+    printf("\x1b[39m");
     return;
 }
 

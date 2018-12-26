@@ -70,13 +70,7 @@ int main(int argc, char *argv[]){
 #endif
 
 
-#ifdef DEBUG
-    printf("write start.\n");
-#endif
     writeCncl(cncl_ob,0);
-#ifdef DEBUG
-    printf("write complete.\n\n");
-#endif
 
 
     /*
