@@ -14,7 +14,6 @@ int cmpVal(Val*,Val*);
 Val *copyVal(Val *);
 void freeCncl(Cncl *);
 void writeCncl(Cncl *, int);
-void writeVal(Val *);
 
 
 int main(int argc, char *argv[]){

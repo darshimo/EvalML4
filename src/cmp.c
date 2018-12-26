@@ -1,7 +1,7 @@
 #include <string.h>
 #include "param.h"
 
-//#define DEBUG
+#define DEBUG
 
 int cmpInt(Int *,Int *);
 int cmpBool(Bool *,Bool *);
@@ -17,6 +17,8 @@ int cmpLet(Let *,Let *);
 int cmpFun(Fun *,Fun *);
 int cmpApp(App *,App *);
 int cmpLetRec(LetRec *,LetRec *);
+int cmpConse(Conse *, Conse *);
+int cmpMatch(Match *, Match *);
 int cmpExp(Exp *,Exp *);
 
 
@@ -27,6 +29,7 @@ void writeInt(Int *);
 void writeBool(Bool *);
 void writeClsr(Clsr *);
 void writeClsrRec(ClsrRec *);
+void writeConsv(Consv *);
 void writeEnv(Env *);
 void writeVal(Val *);
 void writeVar(Var *);
@@ -36,6 +39,8 @@ void writeLet(Let *);
 void writeFun(Fun *);
 void writeApp(App *);
 void writeLetRec(LetRec *);
+void writeConse(Conse *);
+void writeMatch(Match *);
 void writeExp(Exp *);
 #endif
 
@@ -92,6 +97,13 @@ int cmpClsrRec(ClsrRec *ob1, ClsrRec *ob2){
 }
 
 int cmpConsv(Consv *ob1, Consv *ob2){
+#ifdef DEBUG
+    printf("cmpConsv: ");
+    writeConsv(ob1);
+    printf(" : ");
+    writeConsv(ob2);
+    printf(" :\n");
+#endif
     if(cmpVal(ob1->val1_,ob2->val1_))return 1;
     if(cmpVal(ob1->val2_,ob2->val2_))return 1;
     return 0;
@@ -217,12 +229,26 @@ int cmpLetRec(LetRec *ob1, LetRec *ob2){
 }
 
 int cmpConse(Conse *ob1, Conse *ob2){
+#ifdef DEBUG
+    printf("cmpConse: ");
+    writeConse(ob1);
+    printf(" : ");
+    writeConse(ob2);
+    printf(" :\n");
+#endif
     if(cmpExp(ob1->exp1_,ob2->exp1_))return 1;
     if(cmpExp(ob1->exp2_,ob2->exp2_))return 1;
     return 0;
 }
 
 int cmpMatch(Match *ob1, Match *ob2){
+#ifdef DEBUG
+    printf("cmpMatch: ");
+    writeMatch(ob1);
+    printf(" : ");
+    writeMatch(ob2);
+    printf(" :\n");
+#endif
     if(cmpExp(ob1->exp1_,ob2->exp1_))return 1;
     if(cmpExp(ob1->exp2_,ob2->exp2_))return 1;
     if(cmpVar(ob1->x,ob2->x))return 1;
