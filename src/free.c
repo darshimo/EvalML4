@@ -10,6 +10,7 @@ void freeInt(Int *);
 void freeBool(Bool *);
 void freeClsr(Clsr *);
 void freeClsrRec(ClsrRec *);
+void freeConsv(Consv *);
 void freeEnv(Env *);
 void freeVal(Val *);
 void freeVar(Var *);
@@ -19,6 +20,8 @@ void freeLet(Let *);
 void freeFun(Fun *);
 void freeApp(App *);
 void freeLetRec(LetRec *);
+void freeConse(Conse *);
+void freeMatch(Match *);
 void freeExp(Exp *);
 void freeAsmp(Asmp *);
 void freeInfr(Infr *);
@@ -26,196 +29,230 @@ void freeEval(Eval *);
 void freeCncl(Cncl *);
 
 
-void freeInt(Int *int_ob){
+void freeInt(Int *ob){
 #ifdef DEBUG
     printf("free int\n");
 #endif
-    free(int_ob);
+    free(ob);
     return;
 }
 
-void freeBool(Bool *bool_ob){
+void freeBool(Bool *ob){
 #ifdef DEBUG
     printf("free bool\n");
 #endif
-    free(bool_ob);
+    free(ob);
     return;
 }
 
-void freeClsr(Clsr *clsr_ob){
+void freeClsr(Clsr *ob){
 #ifdef DEBUG
     printf("free clsr\n");
 #endif
-    freeEnv(clsr_ob->env_);
-    freeVar(clsr_ob->arg);
-    freeExp(clsr_ob->exp_);
-    free(clsr_ob);
+    freeEnv(ob->env_);
+    freeVar(ob->arg);
+    freeExp(ob->exp_);
+    free(ob);
     return;
 }
 
-void freeClsrRec(ClsrRec *clsrrec_ob){
+void freeClsrRec(ClsrRec *ob){
 #ifdef DEBUG
     printf("free clsrrec\n");
 #endif
-    freeEnv(clsrrec_ob->env_);
-    freeVar(clsrrec_ob->fun);
-    freeVar(clsrrec_ob->arg);
-    freeExp(clsrrec_ob->exp_);
-    free(clsrrec_ob);
+    freeEnv(ob->env_);
+    freeVar(ob->fun);
+    freeVar(ob->arg);
+    freeExp(ob->exp_);
+    free(ob);
     return;
 }
 
-void freeEnv(Env *env_ob){
-    if(env_ob==NULL)return;
+void freeConsv(Consv *ob){
+#ifdef DEBUG
+    printf("free consv\n");
+#endif
+    freeVal(ob->val1_);
+    freeVal(ob->val2_);
+    free(ob);
+    return;
+}
+
+void freeEnv(Env *ob){
+    if(ob==NULL)return;
 #ifdef DEBUG
     printf("free env\n");
 #endif
-    freeVar(env_ob->var_);
-    freeVal(env_ob->val_);
-    freeEnv(env_ob->prev);
-    free(env_ob);
+    freeVar(ob->var_);
+    freeVal(ob->val_);
+    freeEnv(ob->prev);
+    free(ob);
     return;
 }
 
-void freeVal(Val *val_ob){
+void freeVal(Val *ob){
 #ifdef DEBUG
     printf("free val\n");
 #endif
-    if(val_ob->val_type==INT_)freeInt(val_ob->u.int_);
-    else if(val_ob->val_type==BOOL_)freeBool(val_ob->u.bool_);
-    else if(val_ob->val_type==CLSR)freeClsr(val_ob->u.clsr_);
-    else freeClsrRec(val_ob->u.clsrrec_);
-    free(val_ob);
+    if(ob->val_type==INT_)freeInt(ob->u.int_);
+    else if(ob->val_type==BOOL_)freeBool(ob->u.bool_);
+    else if(ob->val_type==CLSR)freeClsr(ob->u.clsr_);
+    else if(ob->val_type==CLSRREC)freeClsrRec(ob->u.clsrrec_);
+    else if(ob->val_type==CONS_)freeConsv(ob->u.consv_);
+    free(ob);
     return;
 }
 
-void freeVar(Var *var_ob){
+void freeVar(Var *ob){
 #ifdef DEBUG
     printf("free var\n");
 #endif
-    free(var_ob->var_name);
-    free(var_ob);
+    free(ob->var_name);
+    free(ob);
     return;
 }
 
-void freeOp(Op *op_ob){
+void freeOp(Op *ob){
 #ifdef DEBUG
     printf("free op\n");
 #endif
-    freeExp(op_ob->exp1_);
-    freeExp(op_ob->exp2_);
-    free(op_ob);
+    freeExp(ob->exp1_);
+    freeExp(ob->exp2_);
+    free(ob);
     return;
 }
 
-void freeIf(If *if_ob){
+void freeIf(If *ob){
 #ifdef DEBUG
     printf("free if\n");
 #endif
-    freeExp(if_ob->exp1_);
-    freeExp(if_ob->exp2_);
-    freeExp(if_ob->exp3_);
-    free(if_ob);
+    freeExp(ob->exp1_);
+    freeExp(ob->exp2_);
+    freeExp(ob->exp3_);
+    free(ob);
     return;
 }
 
-void freeLet(Let *let_ob){
+void freeLet(Let *ob){
 #ifdef DEBUG
     printf("free let\n");
 #endif
-    freeVar(let_ob->var_);
-    freeExp(let_ob->exp1_);
-    freeExp(let_ob->exp2_);
-    free(let_ob);
+    freeVar(ob->var_);
+    freeExp(ob->exp1_);
+    freeExp(ob->exp2_);
+    free(ob);
     return;
 }
 
-void freeFun(Fun *fun_ob){
+void freeFun(Fun *ob){
 #ifdef DEBUG
     printf("free fun\n");
 #endif
-    freeVar(fun_ob->arg);
-    freeExp(fun_ob->exp_);
-    free(fun_ob);
+    freeVar(ob->arg);
+    freeExp(ob->exp_);
+    free(ob);
     return;
 }
 
-void freeApp(App *app_ob){
+void freeApp(App *ob){
 #ifdef DEBUG
     printf("free app\n");
 #endif
-    freeExp(app_ob->exp1_);
-    freeExp(app_ob->exp2_);
-    free(app_ob);
+    freeExp(ob->exp1_);
+    freeExp(ob->exp2_);
+    free(ob);
     return;
 }
 
-void freeLetRec(LetRec *letrec_ob){
+void freeLetRec(LetRec *ob){
 #ifdef DEBUG
     printf("free letrec\n");
 #endif
-    freeVar(letrec_ob->fun);
-    freeVar(letrec_ob->arg);
-    freeExp(letrec_ob->exp1_);
-    freeExp(letrec_ob->exp2_);
+    freeVar(ob->fun);
+    freeVar(ob->arg);
+    freeExp(ob->exp1_);
+    freeExp(ob->exp2_);
     return;
 }
 
-void freeExp(Exp *exp_ob){
+void freeConse(Conse *ob){
+#ifdef DEBUG
+    printf("free conse\n");
+#endif
+    freeExp(ob->exp1_);
+    freeExp(ob->exp2_);
+    return;
+}
+
+void freeMatch(Match *ob){
+#ifdef DEBUG
+    printf("free match\n");
+#endif
+    freeExp(ob->exp1_);
+    freeExp(ob->exp2_);
+    freeVar(ob->x);
+    freeVar(ob->y);
+    freeExp(ob->exp3_);
+    return;
+}
+
+void freeExp(Exp *ob){
 #ifdef DEBUG
     printf("free exp\n");
 #endif
-    if(exp_ob->exp_type==INT)freeInt(exp_ob->u.int_);
-    else if(exp_ob->exp_type==BOOL)freeBool(exp_ob->u.bool_);
-    else if(exp_ob->exp_type==VAR)freeVar(exp_ob->u.var_);
-    else if(exp_ob->exp_type==OP)freeOp(exp_ob->u.op_);
-    else if(exp_ob->exp_type==IF)freeIf(exp_ob->u.if_);
-    else if(exp_ob->exp_type==LET)freeLet(exp_ob->u.let_);
-    else if(exp_ob->exp_type==FUN)freeFun(exp_ob->u.fun_);
-    else if(exp_ob->exp_type==APP)freeApp(exp_ob->u.app_);
-    else freeLetRec(exp_ob->u.letrec_);
-    free(exp_ob);
+    if(ob->exp_type==INT)freeInt(ob->u.int_);
+    else if(ob->exp_type==BOOL)freeBool(ob->u.bool_);
+    else if(ob->exp_type==VAR)freeVar(ob->u.var_);
+    else if(ob->exp_type==OP)freeOp(ob->u.op_);
+    else if(ob->exp_type==IF)freeIf(ob->u.if_);
+    else if(ob->exp_type==LET)freeLet(ob->u.let_);
+    else if(ob->exp_type==FUN)freeFun(ob->u.fun_);
+    else if(ob->exp_type==APP)freeApp(ob->u.app_);
+    else if(ob->exp_type==LETREC)freeLetRec(ob->u.letrec_);
+    else if(ob->exp_type==CONS)freeConse(ob->u.conse_);
+    else if(ob->exp_type==MATCH)freeMatch(ob->u.match_);
+    free(ob);
     return;
 }
 
-void freeAsmp(Asmp *asmp_ob){
-    if(asmp_ob==NULL)return;
+void freeAsmp(Asmp *ob){
+    if(ob==NULL)return;
 #ifdef DEBUG
     printf("free asmp\n");
 #endif
-    freeCncl(asmp_ob->cncl_);
-    freeAsmp(asmp_ob->next);
-    free(asmp_ob);
+    freeCncl(ob->cncl_);
+    freeAsmp(ob->next);
+    free(ob);
     return;
 }
 
-void freeInfr(Infr *infr_ob){
+void freeInfr(Infr *ob){
 #ifdef DEBUG
     printf("free infr\n");
 #endif
-    freeVal(infr_ob->val_);
-    free(infr_ob);
+    freeVal(ob->val_);
+    free(ob);
     return;
 }
 
-void freeEval(Eval *eval_ob){
+void freeEval(Eval *ob){
 #ifdef DEBUG
     printf("free eval\n");
 #endif
-    freeEnv(eval_ob->env_);
-    freeExp(eval_ob->exp_);
-    freeVal(eval_ob->val_);
-    free(eval_ob);
+    freeEnv(ob->env_);
+    freeExp(ob->exp_);
+    freeVal(ob->val_);
+    free(ob);
     return;
 }
 
-void freeCncl(Cncl *cncl_ob){
+void freeCncl(Cncl *ob){
 #ifdef DEBUG
     printf("free cncl\n");
 #endif
-    freeAsmp(cncl_ob->asmp_);
-    if(cncl_ob->cncl_type==INFR)freeInfr(cncl_ob->u.infr_);
-    else freeEval(cncl_ob->u.eval_);
-    free(cncl_ob);
+    freeAsmp(ob->asmp_);
+    if(ob->cncl_type==INFR)freeInfr(ob->u.infr_);
+    else freeEval(ob->u.eval_);
+    free(ob);
     return;
 }

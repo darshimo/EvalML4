@@ -73,7 +73,6 @@ int main(int argc, char *argv[]){
     writeCncl(cncl_ob,0);
 
 
-    /*
 #ifdef DEBUG
     printf("free start.\n");
 #endif
@@ -81,7 +80,6 @@ int main(int argc, char *argv[]){
 #ifdef DEBUG
     printf("free complete.\n\n");
 #endif
-*/
 
     return 0;
 }
