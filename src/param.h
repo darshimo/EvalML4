@@ -29,7 +29,9 @@ typedef enum{ //val type
     INT_,
     BOOL_,
     CLSR,
-    CLSRREC
+    CLSRREC,
+    NIL_,
+    CONS_
 }ValType;
 
 typedef enum{ // exp type
@@ -41,7 +43,11 @@ typedef enum{ // exp type
     LET,
     FUN,
     APP,
-    LETREC
+    LETREC,
+    NIL,
+    CONS,
+    MATCH,
+
 }ExpType;
 
 typedef enum{ // infr type
@@ -56,6 +62,7 @@ struct Int_;
 struct Bool_;
 struct Clsr_;
 struct ClsrRec_;
+struct Consv_;
 
 struct Env_;
 
@@ -67,6 +74,8 @@ struct Let_;
 struct Fun_;
 struct App_;
 struct LetRec_;
+struct Conse_;
+struct Match_;
 
 struct Exp_;
 
@@ -101,6 +110,11 @@ typedef struct ClsrRec_{
     struct Exp_ *exp_;
 }ClsrRec;
 
+typedef struct Consv_{
+    struct Val_ *val1_;
+    struct Val_ *val2_;
+}Consv;
+
 typedef struct Env_{
     struct Var_ *var_;
     struct Val_ *val_;
@@ -114,6 +128,7 @@ typedef struct Val_{
         struct Bool_ *bool_;
         struct Clsr_ *clsr_;
         struct ClsrRec_ *clsrrec_;
+        struct Consv_ *consv_;
     }u;
 }Val;
 
@@ -156,6 +171,19 @@ typedef struct LetRec_{
     struct Exp_ *exp2_;
 }LetRec;
 
+typedef struct Conse_{
+    struct Exp_ *exp1_;
+    struct Exp_ *exp2_;
+}Conse;
+
+typedef struct Match_{
+    struct Exp_ *exp1_;
+    struct Exp_ *exp2_;
+    struct Var_ *x;
+    struct Var_ *y;
+    struct Exp_ *exp3_;
+}Match;
+
 typedef struct Exp_{
     ExpType exp_type;
     union{
@@ -168,6 +196,8 @@ typedef struct Exp_{
         struct Fun_ *fun_;
         struct App_ *app_;
         struct LetRec_ *letrec_;
+        struct Conse_ *conse_;
+        struct Match_ *match_;
     }u;
 }Exp;
 

@@ -1,7 +1,7 @@
 #include "param.h"
 #include <stdlib.h>
 
-//#define DEBUG
+#define DEBUG
 #ifdef DEBUG
 #include <stdio.h>
 void debugCncl(Cncl *,int);
@@ -30,6 +30,7 @@ int main(int argc, char *argv[]){
 #endif
 
 
+    /*
     Val *result;
     if(cncl_ob->cncl_type == INFR){
         result = copyVal(cncl_ob->u.infr_->val_);
@@ -86,6 +87,7 @@ int main(int argc, char *argv[]){
 #ifdef DEBUG
     printf("free complete.\n\n");
 #endif
+*/
 
     return 0;
 }
