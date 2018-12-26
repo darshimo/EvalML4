@@ -63,7 +63,12 @@ void writeClsrRec(ClsrRec *ob){
 }
 
 void writeConsv(Consv *ob){
+    char paren = 0;
+    if(ob->val1_->val_type==CONS_)paren=1;
+
+    if(paren)printf("(");
     writeVal(ob->val1_);
+    if(paren)printf(")");
     printf(" :: ");
     writeVal(ob->val2_);
     return;
@@ -200,9 +205,18 @@ void writeLetRec(LetRec *ob){
 }
 
 void writeConse(Conse *ob){
+    char paren1 = 0;
+    char paren2 = 0;
+    if(ob->exp1_->exp_type==OP || ob->exp1_->exp_type==IF || ob->exp1_->exp_type==LET || ob->exp1_->exp_type==FUN || ob->exp1_->exp_type==APP || ob->exp1_->exp_type==LETREC || ob->exp1_->exp_type==CONS)paren1 = 1;
+    if(ob->exp2_->exp_type==OP || ob->exp2_->exp_type==IF || ob->exp2_->exp_type==LET || ob->exp2_->exp_type==FUN || ob->exp2_->exp_type==APP || ob->exp2_->exp_type==LETREC)paren2 = 1;
+
+    if(paren1)printf("(");
     writeExp(ob->exp1_);
+    if(paren1)printf(")");
     printf(" :: ");
+    if(paren2)printf("(");
     writeExp(ob->exp2_);
+    if(paren2)printf(")");
     return;
 }
 
