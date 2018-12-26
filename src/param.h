@@ -7,8 +7,7 @@ typedef enum{//rule type
     E_MINUS,
     E_TIMES,
     E_LT,
-    E_VAR1,
-    E_VAR2,
+    E_VAR,
     E_LET,
     E_FUN,
     E_APP,
@@ -17,7 +16,11 @@ typedef enum{//rule type
     B_PLUS,
     B_MINUS,
     B_TIMES,
-    B_LT
+    B_LT,
+    E_NIL,
+    E_CONS,
+    E_MATCHNIL,
+    E_MATCHCONS
 }RuleType;
 
 typedef enum{ //cncl type

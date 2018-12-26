@@ -2,6 +2,7 @@
 #include "param.h"
 
 int cmpVar(Var *, Var *);
+void error(char *);
 
 void ind(int d){
     int i;
@@ -30,8 +31,7 @@ void writeRuleName(Cncl *cncl_ob){
     else if(tmp==E_MINUS)printf("E-Minus");
     else if(tmp==E_TIMES)printf("E-Times");
     else if(tmp==E_LT)printf("E-Lt");
-    else if(tmp==E_VAR1)printf("E-Var1");
-    else if(tmp==E_VAR2)printf("E-Var2");
+    else if(tmp==E_VAR)printf("E-Var");
     else if(tmp==E_LET)printf("E-Let");
     else if(tmp==E_FUN)printf("E-Fun");
     else if(tmp==E_APP)printf("E-App");
@@ -40,6 +40,16 @@ void writeRuleName(Cncl *cncl_ob){
     else if(tmp==B_PLUS)printf("B-Plus");
     else if(tmp==B_MINUS)printf("B-Minus");
     else if(tmp==B_TIMES)printf("B-Times");
-    else printf("B-Lt");
+    else if(tmp==B_LT)printf("B-Lt");
+    else if(tmp==E_NIL)printf("E-Nil");
+    else if(tmp==E_CONS)printf("E-Cons");
+    else if(tmp==E_MATCHNIL)printf("E-MatchNil");
+    else printf("E-MatchCons");
     return;
+}
+
+Val *getVal(Env *eps, Var *x){
+    if(eps==NULL)error("var is not found.");
+    if(cmpVar(eps->var_,x)==0)return eps->val_;
+    return getVal(eps->prev,x);
 }

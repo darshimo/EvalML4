@@ -1,7 +1,7 @@
 #include "param.h"
 #include <stdlib.h>
 
-#define DEBUG
+//#define DEBUG
 #ifdef DEBUG
 #include <stdio.h>
 void debugCncl(Cncl *,int);
@@ -35,7 +35,6 @@ int main(int argc, char *argv[]){
     }else{
         result = copyVal(cncl_ob->u.eval_->val_);
     }
-    printf("%d\n\n",cmpVal(result,result));
 
 
 #ifdef DEBUG
@@ -45,7 +44,6 @@ int main(int argc, char *argv[]){
 #endif
 
 
-    /*
 #ifdef DEBUG
     printf("derivation start.\n");
 #endif
@@ -80,6 +78,8 @@ int main(int argc, char *argv[]){
     printf("write complete.\n\n");
 #endif
 
+
+    /*
 #ifdef DEBUG
     printf("free start.\n");
 #endif

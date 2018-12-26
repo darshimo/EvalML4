@@ -1,7 +1,7 @@
 #include <string.h>
 #include "param.h"
 
-#define DEBUG
+//#define DEBUG
 
 int cmpInt(Int *,Int *);
 int cmpBool(Bool *,Bool *);
