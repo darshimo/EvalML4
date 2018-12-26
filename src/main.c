@@ -37,6 +37,7 @@ int main(int argc, char *argv[]){
     }else{
         result = copyVal(cncl_ob->u.eval_->val_);
     }
+    */
 
 
 #ifdef DEBUG
@@ -46,6 +47,7 @@ int main(int argc, char *argv[]){
 #endif
 
 
+    /*
 #ifdef DEBUG
     printf("derivation start.\n");
 #endif
@@ -68,7 +70,7 @@ int main(int argc, char *argv[]){
         }
     }
 #ifdef DEBUG
-    printf("cmp ans clmplete.\n");
+    printf("cmp ans complete.\n\n");
 #endif
 
 
@@ -77,7 +79,7 @@ int main(int argc, char *argv[]){
 #endif
     writeCncl(cncl_ob,0);
 #ifdef DEBUG
-    printf("write complete.\n");
+    printf("write complete.\n\n");
 #endif
 
 #ifdef DEBUG
