@@ -1,9 +1,24 @@
-evalML4: obj/main.o obj/read.o obj/write.o obj/derivation.o obj/free.o obj/copy.o obj/error.o obj/debug.o obj/cmp.o obj/sub.o src/param.h
-	gcc -o $@ obj/main.o obj/read.o obj/write.o obj/derivation.o obj/free.o obj/copy.o obj/error.o obj/debug.o obj/cmp.o obj/sub.o
+SRC = $(shell ls src)
+SRCC = $(filter %.c, $(SRC))
+OBJ = $(addprefix obj/, $(SRCC:%.c=%.o))
+PROBLEM = $(shell ls problem)
+ANSWER = $(addprefix answer/, $(PROBLEM))
+TARGET = ./evalML4
 
-obj/main.o obj/read.o obj/write.o obj/derivation.o obj/free.o obj/copy.o obj/error.o obj/debug.o obj/cmp.o obj/sub.o : obj/%.o : src/%.c
+all: $(TARGET)
+
+$(TARGET): $(OBJ)
+	gcc -o $@ $(OBJ)
+
+$(OBJ) : obj/%.o : src/%.c src/param.h
 	mkdir -p obj
 	gcc -c $< -o $@
 
+$(ANSWER) : answer/% : problem/%
+	mkdir -p answer
+	$(TARGET) $< > $@
+
+test : all $(ANSWER)
+
 clean :
-	rm -r obj evalML4
+	rm -rf $(TARGET) obj answer
