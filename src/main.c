@@ -23,6 +23,7 @@ int cmpVal(Val*,Val*);
 Val *copyVal(Val *);
 void freeCncl(Cncl *);
 void writeCncl(Cncl *, int);
+void texCncl(Cncl *);
 
 
 int main(int argc, char *argv[]){
@@ -97,7 +98,11 @@ int main(int argc, char *argv[]){
 #ifdef DBG_WRITE
     printf("write start.\n");
 #endif
+#ifndef TEX
     writeCncl(cncl_ob,0);
+#else
+    texCncl(cncl_ob);
+#endif
 #ifdef DBG_WRITE
     printf("\nwrite complete.\n\n");
 #endif

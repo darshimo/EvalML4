@@ -13,4 +13,4 @@ make
 
 ## 推論規則
 
-<img src="images/rulebook 21.jpeg" width=50%><img src="images/rulebook 22.jpeg" width = 50%>
+<img src="images/rulebook_21.jpeg" width=50%><img src="images/rulebook_22.jpeg" width = 50%>
