@@ -34,7 +34,7 @@ int main(int argc, char *argv[]){
     if(argc==1){
         char ch;
         int cnt = 0;
-        printf("input judgement (end with ;)\n> ");
+        printf("input judgement within 500 characters (end with ;)\n> ");
         while((ch=fgetc(stdin))!=EOF){
             if(ch=='\n'){
                 printf("> ");
