@@ -1,5 +1,7 @@
 # EvalML4
 
+![](https://github.com/darshimo/EvalML4/blob/images/demo.gif)
+
 ## About
 
 書籍「プログラミング言語の基礎概念」の中で用いられている導出システム**EvalML4**において，判断を入力として導出を出力するプログラム．判断は式とその値からなる．
@@ -23,8 +25,8 @@ a = 2, f = (b = 3)[fun x -> x * b] |- f a evalto 6 by E-App {
 }
 ```
 
-<img src="images/sample.png">
+<img src="https://github.com/darshimo/EvalML4/blob/images/sample.png">
 
 ## 推論規則
 
-<img src="images/rulebook_21.jpeg" width=50%><img src="images/rulebook_22.jpeg" width = 50%>
+<img src="https://github.com/darshimo/EvalML4/blob/images/rulebook_21.jpeg" width=50%><img src="https://github.com/darshimo/EvalML4/blob/images/rulebook_21.jpeg" width = 50%>
