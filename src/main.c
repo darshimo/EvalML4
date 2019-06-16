@@ -27,16 +27,40 @@ void texCncl(Cncl *);
 
 
 int main(int argc, char *argv[]){
-    if(argc!=2)error("arg is not correct.\n");
+    if(argc>2)error("arg is not correct.\n");
 
-    char *str = (char *)malloc(sizeof(char)*500);
-    char *filename = argv[1];
-    FILE *fp;
-    if((fp = fopen(filename,"r"))==NULL){
-        printf("fopen error.");
-        exit(EXIT_FAILURE);
+    char *str = (char *)malloc(sizeof(char)*501);
+
+    if(argc==1){
+        char ch;
+        int cnt = 0;
+        printf("input judgement (end with ;)\n> ");
+        while((ch=fgetc(stdin))!=EOF){
+            if(ch=='\n'){
+                printf("> ");
+                continue;
+            }
+            if(ch==';'){
+                str[cnt] = '\0';
+                break;
+            }
+            str[cnt] = ch;
+            cnt++;
+            if(cnt>500){
+                printf("too long.");
+                exit(EXIT_FAILURE);
+            }
+        }
+        printf("\n");
+    }else{
+        char *filename = argv[1];
+        FILE *fp;
+        if((fp = fopen(filename,"r"))==NULL){
+            printf("fopen error.");
+            exit(EXIT_FAILURE);
+        }
+        fgets(str,500,fp);
     }
-    fgets(str,500,fp);
 
 
 #ifdef DBG_READ
@@ -100,11 +124,12 @@ int main(int argc, char *argv[]){
 #endif
 #ifndef TEX
     writeCncl(cncl_ob,0);
+    printf("\n");
 #else
     texCncl(cncl_ob);
 #endif
 #ifdef DBG_WRITE
-    printf("\nwrite complete.\n\n");
+    printf("write complete.\n\n");
 #endif
 
 
