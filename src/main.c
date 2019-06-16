@@ -7,7 +7,9 @@
 #define DBG_STRCT
 #define DBG_DRV
 #define DBG_CMP
+#define DBG_CP
 #define DBG_FREE
+#define DBG_WRITE
 #endif
 
 #ifdef DBG_STRCT
@@ -45,12 +47,18 @@ int main(int argc, char *argv[]){
 #endif
 
 
+#ifdef DBG_CP
+    printf("copy ans start.\n");
+#endif
     Val *result;
     if(cncl_ob->cncl_type == INFR){
         result = copyVal(cncl_ob->u.infr_->val_);
     }else{
         result = copyVal(cncl_ob->u.eval_->val_);
     }
+#ifdef DBG_CP
+    printf("copy ans complete.\n\n");
+#endif
 
 
 #ifdef DBG_STRCT
@@ -86,7 +94,13 @@ int main(int argc, char *argv[]){
 #endif
 
 
+#ifdef DBG_WRITE
+    printf("write start.\n");
+#endif
     writeCncl(cncl_ob,0);
+#ifdef DBG_WRITE
+    printf("\nwrite complete.\n\n");
+#endif
 
 
 #ifdef DBG_FREE
