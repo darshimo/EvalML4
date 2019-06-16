@@ -3,7 +3,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-//#define DEBUG
+#ifdef DBG_ALL
+#define DBG_DRV
+#endif
 
 void error(char *);
 Int *copyInt(Int *);
@@ -15,7 +17,7 @@ Var *copyVar(Var *);
 int cmpVar(Var *, Var *);
 Val *getVal(Env *, Var *);
 
-#ifdef DEBUG
+#ifdef DBG_DRV
 void writeInt(Int *);
 void writeBool(Bool *);
 void writeClsr(Clsr *);
@@ -35,7 +37,7 @@ void derivation(Cncl *, int);
 void B_Plus(Cncl *cncl_ob, int d){
     int i1 = cncl_ob->u.infr_->int1;
     int i2 = cncl_ob->u.infr_->int2;
-#ifdef DEBUG
+#ifdef DBG_DRV
     ind(d);
     printf("B-Plus: ");
     printf("%d plus %d",i1,i2);
@@ -58,7 +60,7 @@ void B_Plus(Cncl *cncl_ob, int d){
 void B_Minus(Cncl *cncl_ob, int d){
     int i1 = cncl_ob->u.infr_->int1;
     int i2 = cncl_ob->u.infr_->int2;
-#ifdef DEBUG
+#ifdef DBG_DRV
     ind(d);
     printf("B-Minus: ");
     printf("%d minus %d",i1,i2);
@@ -81,7 +83,7 @@ void B_Minus(Cncl *cncl_ob, int d){
 void B_Times(Cncl *cncl_ob, int d){
     int i1 = cncl_ob->u.infr_->int1;
     int i2 = cncl_ob->u.infr_->int2;
-#ifdef DEBUG
+#ifdef DBG_DRV
     ind(d);
     printf("B-Times: ");
     printf("%d times %d",i1,i2);
@@ -104,7 +106,7 @@ void B_Times(Cncl *cncl_ob, int d){
 void B_Lt(Cncl *cncl_ob, int d){
     int i1 = cncl_ob->u.infr_->int1;
     int i2 = cncl_ob->u.infr_->int2;
-#ifdef DEBUG
+#ifdef DBG_DRV
     ind(d);
     printf("B-Lt: ");
     printf("%d less than %d",i1,i2);
@@ -125,7 +127,7 @@ void B_Lt(Cncl *cncl_ob, int d){
 }
 
 void E_Int(Cncl *cncl_ob, int d){
-#ifdef DEBUG
+#ifdef DBG_DRV
     ind(d);
     printf("E-Int: ");
     writeEnv(cncl_ob->u.eval_->env_);
@@ -149,7 +151,7 @@ void E_Int(Cncl *cncl_ob, int d){
 }
 
 void E_Bool(Cncl *cncl_ob, int d){
-#ifdef DEBUG
+#ifdef DBG_DRV
     ind(d);
     printf("E-Bool: ");
     writeEnv(cncl_ob->u.eval_->env_);
@@ -174,7 +176,7 @@ void E_Bool(Cncl *cncl_ob, int d){
 
 
 void E_Var(Cncl *cncl_ob, int d){
-#ifdef DEBUG
+#ifdef DBG_DRV
     ind(d);
     printf("E-Var: ");
     writeEnv(cncl_ob->u.eval_->env_);
@@ -196,7 +198,7 @@ void E_Var(Cncl *cncl_ob, int d){
 }
 
 void E_Op(Cncl *cncl_ob, int d){
-#ifdef DEBUG
+#ifdef DBG_DRV
     ind(d);
     printf("E-Op: ");
     writeEnv(cncl_ob->u.eval_->env_);
@@ -255,7 +257,7 @@ void E_Op(Cncl *cncl_ob, int d){
 }
 
 void E_If(Cncl *cncl_ob, int d){
-#ifdef DEBUG
+#ifdef DBG_DRV
     ind(d);
     printf("E-If: ");
     writeEnv(cncl_ob->u.eval_->env_);
@@ -298,7 +300,7 @@ void E_If(Cncl *cncl_ob, int d){
 }
 
 void E_Let(Cncl *cncl_ob, int d){
-#ifdef DEBUG
+#ifdef DBG_DRV
     ind(d);
     printf("E-Let: ");
     writeEnv(cncl_ob->u.eval_->env_);
@@ -339,7 +341,7 @@ void E_Let(Cncl *cncl_ob, int d){
 }
 
 void E_Fun(Cncl *cncl_ob, int d){
-#ifdef DEBUG
+#ifdef DBG_DRV
     ind(d);
     printf("E-Fun: ");
     writeEnv(cncl_ob->u.eval_->env_);
@@ -367,7 +369,7 @@ void E_Fun(Cncl *cncl_ob, int d){
 }
 
 void E_App(Cncl *cncl_ob, int d){
-#ifdef DEBUG
+#ifdef DBG_DRV
     ind(d);
     printf("E-App: ");
     writeEnv(cncl_ob->u.eval_->env_);
@@ -440,7 +442,7 @@ void E_App(Cncl *cncl_ob, int d){
 }
 
 void E_LetRec(Cncl *cncl_ob, int d){
-#ifdef DEBUG
+#ifdef DBG_DRV
     ind(d);
     printf("E-LetRec: ");
     writeEnv(cncl_ob->u.eval_->env_);
@@ -483,7 +485,7 @@ void E_LetRec(Cncl *cncl_ob, int d){
 
 
 void E_Nil(Cncl *cncl_ob, int d){
-#ifdef DEBUG
+#ifdef DBG_DRV
     ind(d);
     printf("E-Nil: ");
     writeEnv(cncl_ob->u.eval_->env_);
@@ -501,7 +503,7 @@ void E_Nil(Cncl *cncl_ob, int d){
 }
 
 void E_Cons(Cncl *cncl_ob, int d){
-#ifdef DEBUG
+#ifdef DBG_DRV
     ind(d);
     printf("E-Cons: ");
     writeEnv(cncl_ob->u.eval_->env_);
@@ -545,7 +547,7 @@ void E_Cons(Cncl *cncl_ob, int d){
 }
 
 void E_Match(Cncl *cncl_ob, int d){
-#ifdef DEBUG
+#ifdef DBG_DRV
     ind(d);
     printf("E-Match: ");
     writeEnv(cncl_ob->u.eval_->env_);
