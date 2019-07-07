@@ -799,18 +799,25 @@ Eval *readEval(char* str){
 
     char *str1, *str2, *str3;
     str1 = str;
-    str2 = strstr(str1,"|-");
-    *str2 = '\0';
-    str2+=2;
+    if((str2 = strstr(str1,"|-"))!=NULL){
+        *str2 = '\0';
+        str2+=2;
+        eval_ob->env_ = readEnv(str1);
+    }else{
+        eval_ob->env_ = NULL;
+        str2 = str1;
+    }
     str2+=strspn(str2," ");
-    str3 = strstr(str2," evalto ");
-    *str3 = '\0';
-    str3+=8;
-    str3+=strspn(str3," ");
+    if((str3 = strstr(str2," evalto "))!=NULL){
+        *str3 = '\0';
+        str3+=8;
+        str3+=strspn(str3," ");
+        eval_ob->val_ = readVal(str3);
+    }else{
+        eval_ob->val_ = NULL;
+    }
 
-    eval_ob->env_ = readEnv(str1);
     eval_ob->exp_ = readExp(str2);
-    eval_ob->val_ = readVal(str3);
 
     return eval_ob;
 }
@@ -839,13 +846,17 @@ Infr *readInfr(char* str){
         tp = strtok(NULL," ");
     }
 
-    tp = strtok(NULL," ");
-    infr_ob->int2 = atoi(tp);
+    if(strstr(tp,"is")==NULL){
+        infr_ob->val_ = NULL;
+    }else{
+        tp = strtok(NULL," ");
+        infr_ob->int2 = atoi(tp);
 
-    tp = strtok(NULL," ");
+        tp = strtok(NULL," ");
 
-    tp = strtok(NULL," ");
-    infr_ob->val_ = readVal(tp);
+        tp = strtok(NULL," ");
+        infr_ob->val_ = readVal(tp);
+    }
 
     return infr_ob;
 }
@@ -858,7 +869,7 @@ Cncl *readCncl(char* str){
     Cncl* cncl_ob = (Cncl *)malloc(sizeof(Cncl));
 
     str += strspn(str," ");
-    if(strstr(str," is ")==NULL){
+    if(strstr(str," plus ")==NULL && strstr(str," minus ")==NULL && strstr(str," times ")==NULL && strstr(str," less ")==NULL){
         cncl_ob->cncl_type = EVAL;
         cncl_ob->u.eval_ = readEval(str);
     }else{

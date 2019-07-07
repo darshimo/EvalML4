@@ -1,13 +1,12 @@
 #include "param.h"
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 
 #ifdef DBG_ALL
 #define DBG_READ
 #define DBG_STRCT
 #define DBG_DRV
-#define DBG_CMP
-#define DBG_CP
 #define DBG_FREE
 #define DBG_WRITE
 #endif
@@ -34,7 +33,7 @@ int main(int argc, char *argv[]){
     if(argc==1){
         char ch;
         int cnt = 0;
-        printf("input judgement within 500 characters (end with ;)\n> ");
+        printf("input expression within 500 characters (end with ;)\n> ");
         while((ch=fgetc(stdin))!=EOF){
             if(ch=='\n'){
                 printf("> ");
@@ -60,6 +59,8 @@ int main(int argc, char *argv[]){
             exit(EXIT_FAILURE);
         }
         fgets(str,500,fp);
+        int l = strlen(str);
+        if(str[l-1]=='\n')str[l-1]='\0';
     }
 
 
@@ -69,20 +70,6 @@ int main(int argc, char *argv[]){
     Cncl *cncl_ob = readCncl(str);
 #ifdef DBG_READ
     printf("read complete.\n\n");
-#endif
-
-
-#ifdef DBG_CP
-    printf("copy ans start.\n");
-#endif
-    Val *result;
-    if(cncl_ob->cncl_type == INFR){
-        result = copyVal(cncl_ob->u.infr_->val_);
-    }else{
-        result = copyVal(cncl_ob->u.eval_->val_);
-    }
-#ifdef DBG_CP
-    printf("copy ans complete.\n\n");
 #endif
 
 
@@ -99,23 +86,6 @@ int main(int argc, char *argv[]){
     derivation(cncl_ob,0);
 #ifdef DBG_DRV
     printf("derivation complete.\n\n");
-#endif
-
-
-#ifdef DBG_CMP
-    printf("cmp ans start.\n");
-#endif
-    if(cncl_ob->cncl_type == INFR){
-        if(cmpVal(cncl_ob->u.infr_->val_,result)){
-            error("result is not correct.\n");
-        }
-    }else{
-        if(cmpVal(cncl_ob->u.eval_->val_,result)){
-            error("result is not correct.\n");
-        }
-    }
-#ifdef DBG_CMP
-    printf("cmp ans complete.\n\n");
 #endif
 
 

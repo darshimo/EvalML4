@@ -81,6 +81,7 @@ void debugEnv(Env *ob, int d){
 };
 
 void debugVal(Val *ob, int d){
+    if(ob==NULL)return;
     tree(d);
     printf("val\n");
     if(ob->val_type==INT_){
