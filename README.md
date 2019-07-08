@@ -37,7 +37,9 @@ $ make
 
 ### Syntax
 
-<img src="https://github.com/darshimo/EvalML4/blob/images/syntax.png" width="50%">
+<div align="center">
+<img src="https://github.com/darshimo/EvalML4/blob/images/syntax.png" width="70%">
+</div>
 
 ### Inference Rules
 
