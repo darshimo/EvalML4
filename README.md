@@ -37,11 +37,11 @@ $ make
 
 ### Syntax
 
-![](https://github.com/darshimo/EvalML4/blob/images/syntax.pdf)
+![](https://github.com/darshimo/EvalML4/blob/images/syntax.png)
 
 ### Inference Rules
 
-![](https://github.com/darshimo/EvalML4/blob/images/rules.pdf)
+![](https://github.com/darshimo/EvalML4/blob/images/rules.png)
 
 
 ## Example
