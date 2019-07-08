@@ -35,7 +35,13 @@ $ make
 
 ## Derivation System
 
-[](<img src="https://github.com/darshimo/EvalML4/blob/images/rule_1.jpeg" width=50%><img src="https://github.com/darshimo/EvalML4/blob/images/rule_2.jpeg" width = 50%>)
+### Syntax
+
+![](https://github.com/darshimo/EvalML4/blob/images/syntax.pdf)
+
+### Inference Rules
+
+![](https://github.com/darshimo/EvalML4/blob/images/rules.pdf)
 
 
 ## Example
