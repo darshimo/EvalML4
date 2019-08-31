@@ -18,7 +18,7 @@ $ make
 ## Usage
 
 - Execute evalML4 without arguments and type expression.
-	
+
 	```sh
 	$ ./evalML4
 	input expression within 500 characters (end with ;)
@@ -30,7 +30,7 @@ $ make
 	```sh
 	$ ./evalML4 problem/70
 	```
-	
+
 	Runing `make test`, you can get the answers for sample problems.
 
 ## Derivation System

@@ -31,8 +31,8 @@ void freeInfr(Infr *);
 void freeEval(Eval *);
 void freeCncl(Cncl *);
 
-
-void freeInt(Int *ob){
+void freeInt(Int *ob)
+{
 #ifdef DBG_FREE
     printf("free int\n");
 #endif
@@ -40,7 +40,8 @@ void freeInt(Int *ob){
     return;
 }
 
-void freeBool(Bool *ob){
+void freeBool(Bool *ob)
+{
 #ifdef DBG_FREE
     printf("free bool\n");
 #endif
@@ -48,7 +49,8 @@ void freeBool(Bool *ob){
     return;
 }
 
-void freeClsr(Clsr *ob){
+void freeClsr(Clsr *ob)
+{
 #ifdef DBG_FREE
     printf("free clsr\n");
 #endif
@@ -59,7 +61,8 @@ void freeClsr(Clsr *ob){
     return;
 }
 
-void freeClsrRec(ClsrRec *ob){
+void freeClsrRec(ClsrRec *ob)
+{
 #ifdef DBG_FREE
     printf("free clsrrec\n");
 #endif
@@ -71,7 +74,8 @@ void freeClsrRec(ClsrRec *ob){
     return;
 }
 
-void freeConsv(Consv *ob){
+void freeConsv(Consv *ob)
+{
 #ifdef DBG_FREE
     printf("free consv\n");
 #endif
@@ -81,8 +85,10 @@ void freeConsv(Consv *ob){
     return;
 }
 
-void freeEnv(Env *ob){
-    if(ob==NULL)return;
+void freeEnv(Env *ob)
+{
+    if (ob == NULL)
+        return;
 #ifdef DBG_FREE
     printf("free env\n");
 #endif
@@ -93,20 +99,27 @@ void freeEnv(Env *ob){
     return;
 }
 
-void freeVal(Val *ob){
+void freeVal(Val *ob)
+{
 #ifdef DBG_FREE
     printf("free val\n");
 #endif
-    if(ob->val_type==INT_)freeInt(ob->u.int_);
-    else if(ob->val_type==BOOL_)freeBool(ob->u.bool_);
-    else if(ob->val_type==CLSR)freeClsr(ob->u.clsr_);
-    else if(ob->val_type==CLSRREC)freeClsrRec(ob->u.clsrrec_);
-    else if(ob->val_type==CONS_)freeConsv(ob->u.consv_);
+    if (ob->val_type == INT_)
+        freeInt(ob->u.int_);
+    else if (ob->val_type == BOOL_)
+        freeBool(ob->u.bool_);
+    else if (ob->val_type == CLSR)
+        freeClsr(ob->u.clsr_);
+    else if (ob->val_type == CLSRREC)
+        freeClsrRec(ob->u.clsrrec_);
+    else if (ob->val_type == CONS_)
+        freeConsv(ob->u.consv_);
     free(ob);
     return;
 }
 
-void freeVar(Var *ob){
+void freeVar(Var *ob)
+{
 #ifdef DBG_FREE
     printf("free var\n");
 #endif
@@ -115,7 +128,8 @@ void freeVar(Var *ob){
     return;
 }
 
-void freeOp(Op *ob){
+void freeOp(Op *ob)
+{
 #ifdef DBG_FREE
     printf("free op\n");
 #endif
@@ -125,7 +139,8 @@ void freeOp(Op *ob){
     return;
 }
 
-void freeIf(If *ob){
+void freeIf(If *ob)
+{
 #ifdef DBG_FREE
     printf("free if\n");
 #endif
@@ -136,7 +151,8 @@ void freeIf(If *ob){
     return;
 }
 
-void freeLet(Let *ob){
+void freeLet(Let *ob)
+{
 #ifdef DBG_FREE
     printf("free let\n");
 #endif
@@ -147,7 +163,8 @@ void freeLet(Let *ob){
     return;
 }
 
-void freeFun(Fun *ob){
+void freeFun(Fun *ob)
+{
 #ifdef DBG_FREE
     printf("free fun\n");
 #endif
@@ -157,7 +174,8 @@ void freeFun(Fun *ob){
     return;
 }
 
-void freeApp(App *ob){
+void freeApp(App *ob)
+{
 #ifdef DBG_FREE
     printf("free app\n");
 #endif
@@ -167,7 +185,8 @@ void freeApp(App *ob){
     return;
 }
 
-void freeLetRec(LetRec *ob){
+void freeLetRec(LetRec *ob)
+{
 #ifdef DBG_FREE
     printf("free letrec\n");
 #endif
@@ -178,7 +197,8 @@ void freeLetRec(LetRec *ob){
     return;
 }
 
-void freeConse(Conse *ob){
+void freeConse(Conse *ob)
+{
 #ifdef DBG_FREE
     printf("free conse\n");
 #endif
@@ -187,7 +207,8 @@ void freeConse(Conse *ob){
     return;
 }
 
-void freeMatch(Match *ob){
+void freeMatch(Match *ob)
+{
 #ifdef DBG_FREE
     printf("free match\n");
 #endif
@@ -199,27 +220,41 @@ void freeMatch(Match *ob){
     return;
 }
 
-void freeExp(Exp *ob){
+void freeExp(Exp *ob)
+{
 #ifdef DBG_FREE
     printf("free exp\n");
 #endif
-    if(ob->exp_type==INT)freeInt(ob->u.int_);
-    else if(ob->exp_type==BOOL)freeBool(ob->u.bool_);
-    else if(ob->exp_type==VAR)freeVar(ob->u.var_);
-    else if(ob->exp_type==OP)freeOp(ob->u.op_);
-    else if(ob->exp_type==IF)freeIf(ob->u.if_);
-    else if(ob->exp_type==LET)freeLet(ob->u.let_);
-    else if(ob->exp_type==FUN)freeFun(ob->u.fun_);
-    else if(ob->exp_type==APP)freeApp(ob->u.app_);
-    else if(ob->exp_type==LETREC)freeLetRec(ob->u.letrec_);
-    else if(ob->exp_type==CONS)freeConse(ob->u.conse_);
-    else if(ob->exp_type==MATCH)freeMatch(ob->u.match_);
+    if (ob->exp_type == INT)
+        freeInt(ob->u.int_);
+    else if (ob->exp_type == BOOL)
+        freeBool(ob->u.bool_);
+    else if (ob->exp_type == VAR)
+        freeVar(ob->u.var_);
+    else if (ob->exp_type == OP)
+        freeOp(ob->u.op_);
+    else if (ob->exp_type == IF)
+        freeIf(ob->u.if_);
+    else if (ob->exp_type == LET)
+        freeLet(ob->u.let_);
+    else if (ob->exp_type == FUN)
+        freeFun(ob->u.fun_);
+    else if (ob->exp_type == APP)
+        freeApp(ob->u.app_);
+    else if (ob->exp_type == LETREC)
+        freeLetRec(ob->u.letrec_);
+    else if (ob->exp_type == CONS)
+        freeConse(ob->u.conse_);
+    else if (ob->exp_type == MATCH)
+        freeMatch(ob->u.match_);
     free(ob);
     return;
 }
 
-void freeAsmp(Asmp *ob){
-    if(ob==NULL)return;
+void freeAsmp(Asmp *ob)
+{
+    if (ob == NULL)
+        return;
 #ifdef DBG_FREE
     printf("free asmp\n");
 #endif
@@ -229,7 +264,8 @@ void freeAsmp(Asmp *ob){
     return;
 }
 
-void freeInfr(Infr *ob){
+void freeInfr(Infr *ob)
+{
 #ifdef DBG_FREE
     printf("free infr\n");
 #endif
@@ -238,7 +274,8 @@ void freeInfr(Infr *ob){
     return;
 }
 
-void freeEval(Eval *ob){
+void freeEval(Eval *ob)
+{
 #ifdef DBG_FREE
     printf("free eval\n");
 #endif
@@ -249,13 +286,16 @@ void freeEval(Eval *ob){
     return;
 }
 
-void freeCncl(Cncl *ob){
+void freeCncl(Cncl *ob)
+{
 #ifdef DBG_FREE
     printf("free cncl\n");
 #endif
     freeAsmp(ob->asmp_);
-    if(ob->cncl_type==INFR)freeInfr(ob->u.infr_);
-    else freeEval(ob->u.eval_);
+    if (ob->cncl_type == INFR)
+        freeInfr(ob->u.infr_);
+    else
+        freeEval(ob->u.eval_);
     free(ob);
     return;
 }

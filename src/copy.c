@@ -28,8 +28,8 @@ Conse *copyConse(Conse *);
 Match *copyMatch(Match *);
 Exp *copyExp(Exp *);
 
-
-Int *copyInt(Int *sample){
+Int *copyInt(Int *sample)
+{
 #ifdef DBG_CP
     printf("copyInt start\n");
 #endif
@@ -38,7 +38,8 @@ Int *copyInt(Int *sample){
     return ob;
 }
 
-Bool *copyBool(Bool *sample){
+Bool *copyBool(Bool *sample)
+{
 #ifdef DBG_CP
     printf("copyBool start\n");
 #endif
@@ -47,7 +48,8 @@ Bool *copyBool(Bool *sample){
     return ob;
 }
 
-Clsr *copyClsr(Clsr *sample){
+Clsr *copyClsr(Clsr *sample)
+{
 #ifdef DBG_CP
     printf("copyClsr start\n");
 #endif
@@ -58,7 +60,8 @@ Clsr *copyClsr(Clsr *sample){
     return ob;
 }
 
-ClsrRec *copyClsrRec(ClsrRec *sample){
+ClsrRec *copyClsrRec(ClsrRec *sample)
+{
 #ifdef DBG_CP
     printf("copyClsrRec start\n");
 #endif
@@ -70,7 +73,8 @@ ClsrRec *copyClsrRec(ClsrRec *sample){
     return ob;
 }
 
-Consv *copyConsv(Consv *sample){
+Consv *copyConsv(Consv *sample)
+{
 #ifdef DBG_CP
     printf("copyConsv start\n");
 #endif
@@ -80,8 +84,10 @@ Consv *copyConsv(Consv *sample){
     return ob;
 }
 
-Env *copyEnv(Env *sample){
-    if(sample==NULL)return NULL;
+Env *copyEnv(Env *sample)
+{
+    if (sample == NULL)
+        return NULL;
 #ifdef DBG_CP
     printf("copyEnv start\n");
 #endif
@@ -92,37 +98,49 @@ Env *copyEnv(Env *sample){
     return ob;
 }
 
-Val *copyVal(Val *sample){
+Val *copyVal(Val *sample)
+{
 #ifdef DBG_CP
     printf("copyVal start\n");
 #endif
     Val *ob = (Val *)malloc(sizeof(Val));
     ob->val_type = sample->val_type;
-    if(ob->val_type==INT_){
+    if (ob->val_type == INT_)
+    {
         ob->u.int_ = copyInt(sample->u.int_);
-    }else if(ob->val_type==BOOL_){
+    }
+    else if (ob->val_type == BOOL_)
+    {
         ob->u.bool_ = copyBool(sample->u.bool_);
-    }else if(ob->val_type==CLSR){
+    }
+    else if (ob->val_type == CLSR)
+    {
         ob->u.clsr_ = copyClsr(sample->u.clsr_);
-    }else if(ob->val_type==CLSRREC){
+    }
+    else if (ob->val_type == CLSRREC)
+    {
         ob->u.clsrrec_ = copyClsrRec(sample->u.clsrrec_);
-    }else if(ob->val_type==CONS_){
+    }
+    else if (ob->val_type == CONS_)
+    {
         ob->u.consv_ = copyConsv(sample->u.consv_);
     }
     return ob;
 }
 
-Var *copyVar(Var *sample){
+Var *copyVar(Var *sample)
+{
 #ifdef DBG_CP
     printf("copyVar start\n");
 #endif
     Var *ob = (Var *)malloc(sizeof(Var));
-    ob->var_name = (char *)malloc(sizeof(char)*(strlen(sample->var_name)+1));
+    ob->var_name = (char *)malloc(sizeof(char) * (strlen(sample->var_name) + 1));
     strcpy(ob->var_name, sample->var_name);
     return ob;
 };
 
-Op *copyOp(Op *sample){
+Op *copyOp(Op *sample)
+{
 #ifdef DBG_CP
     printf("copyOp start\n");
 #endif
@@ -133,7 +151,8 @@ Op *copyOp(Op *sample){
     return ob;
 }
 
-If *copyIf(If *sample){
+If *copyIf(If *sample)
+{
 #ifdef DBG_CP
     printf("copyIf start\n");
 #endif
@@ -144,7 +163,8 @@ If *copyIf(If *sample){
     return ob;
 }
 
-Let *copyLet(Let *sample){
+Let *copyLet(Let *sample)
+{
 #ifdef DBG_CP
     printf("copyLet start\n");
 #endif
@@ -155,7 +175,8 @@ Let *copyLet(Let *sample){
     return ob;
 }
 
-Fun *copyFun(Fun *sample){
+Fun *copyFun(Fun *sample)
+{
 #ifdef DBG_CP
     printf("copyFun start\n");
 #endif
@@ -165,7 +186,8 @@ Fun *copyFun(Fun *sample){
     return ob;
 }
 
-App *copyApp(App *sample){
+App *copyApp(App *sample)
+{
 #ifdef DBG_CP
     printf("copyApp start\n");
 #endif
@@ -175,7 +197,8 @@ App *copyApp(App *sample){
     return ob;
 }
 
-LetRec *copyLetRec(LetRec *sample){
+LetRec *copyLetRec(LetRec *sample)
+{
 #ifdef DBG_CP
     printf("copyLetRec start\n");
 #endif
@@ -187,7 +210,8 @@ LetRec *copyLetRec(LetRec *sample){
     return ob;
 }
 
-Conse *copyConse(Conse *sample){
+Conse *copyConse(Conse *sample)
+{
 #ifdef DBG_CP
     printf("copyConse start\n");
 #endif
@@ -197,7 +221,8 @@ Conse *copyConse(Conse *sample){
     return ob;
 }
 
-Match *copyMatch(Match *sample){
+Match *copyMatch(Match *sample)
+{
 #ifdef DBG_CP
     printf("copyMatch start\n");
 #endif
@@ -210,22 +235,34 @@ Match *copyMatch(Match *sample){
     return ob;
 }
 
-Exp *copyExp(Exp *sample){
+Exp *copyExp(Exp *sample)
+{
 #ifdef DBG_CP
     printf("copyExp start\n");
 #endif
     Exp *ob = (Exp *)malloc(sizeof(Exp));
     ob->exp_type = sample->exp_type;
-    if(ob->exp_type==INT)ob->u.int_ = copyInt(sample->u.int_);
-    else if(ob->exp_type==BOOL)ob->u.bool_ = copyBool(sample->u.bool_);
-    else if(ob->exp_type==VAR)ob->u.var_ = copyVar(sample->u.var_);
-    else if(ob->exp_type==OP)ob->u.op_ = copyOp(sample->u.op_);
-    else if(ob->exp_type==IF)ob->u.if_ = copyIf(sample->u.if_);
-    else if(ob->exp_type==LET)ob->u.let_ = copyLet(sample->u.let_);
-    else if(ob->exp_type==FUN)ob->u.fun_ = copyFun(sample->u.fun_);
-    else if(ob->exp_type==APP)ob->u.app_ = copyApp(sample->u.app_);
-    else if(ob->exp_type==LETREC)ob->u.letrec_ = copyLetRec(sample->u.letrec_);
-    else if(ob->exp_type==CONS)ob->u.conse_ = copyConse(sample->u.conse_);
-    else if(ob->exp_type==MATCH)ob->u.match_ = copyMatch(sample->u.match_);
+    if (ob->exp_type == INT)
+        ob->u.int_ = copyInt(sample->u.int_);
+    else if (ob->exp_type == BOOL)
+        ob->u.bool_ = copyBool(sample->u.bool_);
+    else if (ob->exp_type == VAR)
+        ob->u.var_ = copyVar(sample->u.var_);
+    else if (ob->exp_type == OP)
+        ob->u.op_ = copyOp(sample->u.op_);
+    else if (ob->exp_type == IF)
+        ob->u.if_ = copyIf(sample->u.if_);
+    else if (ob->exp_type == LET)
+        ob->u.let_ = copyLet(sample->u.let_);
+    else if (ob->exp_type == FUN)
+        ob->u.fun_ = copyFun(sample->u.fun_);
+    else if (ob->exp_type == APP)
+        ob->u.app_ = copyApp(sample->u.app_);
+    else if (ob->exp_type == LETREC)
+        ob->u.letrec_ = copyLetRec(sample->u.letrec_);
+    else if (ob->exp_type == CONS)
+        ob->u.conse_ = copyConse(sample->u.conse_);
+    else if (ob->exp_type == MATCH)
+        ob->u.match_ = copyMatch(sample->u.match_);
     return ob;
 }
