@@ -24,6 +24,7 @@ void writeExp(Exp *);
 void writeAsmp(Asmp *, int);
 void writeInfr(Infr *);
 void writeEval(Eval *);
+void writePatMatch(PatMatch *);
 void writeCncl(Cncl *, int);
 
 void ind(int);
@@ -441,13 +442,35 @@ void writeEval(Eval *ob)
     return;
 }
 
+void writePatMatch(PatMatch *ob)
+{
+    if (ob->match)
+    {
+        writePat(ob->pat_);
+        printf(" matches ");
+        writeVal(ob->val_);
+        printf(" when (");
+        writeEnv(ob->env_);
+        printf(")");
+    }
+    else
+    {
+        writePat(ob->pat_);
+        printf(" doesn't match ");
+        writeVal(ob->val_);
+    }
+    return;
+}
+
 void writeCncl(Cncl *ob, int d)
 {
     ind(d);
     if (ob->cncl_type == INFR)
         writeInfr(ob->u.infr_);
-    else
+    else if (ob->cncl_type == EVAL)
         writeEval(ob->u.eval_);
+    else
+        writePatMatch(ob->u.patmatch_);
     printf(" by ");
     writeRuleName(ob);
     printf(" {");
