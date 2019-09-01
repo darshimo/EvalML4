@@ -1,9 +1,6 @@
 #include "param.h"
 #include <stdio.h>
 
-/*
-
-
 void writeInt(Int *);
 void writeBool(Bool *);
 void writeClsr(Clsr *);
@@ -20,6 +17,9 @@ void writeApp(App *);
 void writeLetRec(LetRec *);
 void writeConse(Conse *);
 void writeMatch(Match *);
+void writeConsp(Consp *);
+void writePat(Pat *);
+void writeClauses(Clauses *);
 void writeExp(Exp *);
 void writeAsmp(Asmp *, int);
 void writeInfr(Infr *);
@@ -287,15 +287,60 @@ void writeConse(Conse *ob)
 void writeMatch(Match *ob)
 {
     printf("match ");
-    writeExp(ob->exp1_);
-    printf(" with [] -> ");
-    writeExp(ob->exp2_);
-    printf(" | ");
-    writeVar(ob->x);
+    writeExp(ob->exp_);
+    printf(" with ");
+    writeClauses(ob->clauses_);
+    return;
+}
+
+void writeConsp(Consp *ob)
+{
+    char paren = 0;
+    if (ob->pat1_->pat_type == CONSP)
+        paren = 1;
+
+    if (paren)
+        printf("(");
+    writePat(ob->pat1_);
+    if (paren)
+        printf(")");
     printf(" :: ");
-    writeVar(ob->y);
+    writePat(ob->pat2_);
+    return;
+}
+
+void writePat(Pat *ob)
+{
+
+    if (ob->pat_type == VARP)
+    {
+        writeVar(ob->u.var_);
+    }
+    else if (ob->pat_type == NILP)
+    {
+        printf("[]");
+    }
+    else if (ob->pat_type == CONSP)
+    {
+        writeConsp(ob->u.consp_);
+    }
+    else
+    {
+        printf("_");
+    }
+    return;
+}
+
+void writeClauses(Clauses *ob)
+{
+    writePat(ob->pat_);
     printf(" -> ");
-    writeExp(ob->exp3_);
+    writeExp(ob->exp_);
+    if (ob->next != NULL)
+    {
+        printf(" | ");
+        writeClauses(ob->next);
+    }
     return;
 }
 
@@ -412,4 +457,3 @@ void writeCncl(Cncl *ob, int d)
     printf("}");
     return;
 }
-*/
