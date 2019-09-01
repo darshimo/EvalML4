@@ -1,8 +1,6 @@
 #include "param.h"
 #include <stdio.h>
 
-/*
-
 void texInt(Int *);
 void texBool(Bool *);
 void texClsr(Clsr *);
@@ -19,10 +17,14 @@ void texApp(App *);
 void texLetRec(LetRec *);
 void texConse(Conse *);
 void texMatch(Match *);
+void texConsp(Consp *);
+void texPat(Pat *);
+void texClauses(Clauses *);
 void texExp(Exp *);
 int texAsmp(Asmp *);
 void texInfr(Infr *);
 void texEval(Eval *);
+void texPatMatch(PatMatch *);
 void texCncl(Cncl *);
 
 void ind(int);
@@ -286,15 +288,51 @@ void texConse(Conse *ob)
 void texMatch(Match *ob)
 {
     printf("{\\rm match}~");
-    texExp(ob->exp1_);
-    printf("~{\\rm with} [] \\to ");
-    texExp(ob->exp2_);
-    printf(" | ");
-    texVar(ob->x);
+    texExp(ob->exp_);
+    printf("~{\\rm with}~");
+    texClauses(ob->clauses_);
+    return;
+}
+
+void texConsp(Consp *ob)
+{
+    char paren = 0;
+    if (ob->pat1_->pat_type == CONSP)
+        paren = 1;
+
+    if (paren)
+        printf("(");
+    texPat(ob->pat1_);
+    if (paren)
+        printf(")");
     printf(" :: ");
-    texVar(ob->y);
-    printf("\\to ");
-    texExp(ob->exp3_);
+    texPat(ob->pat2_);
+    return;
+}
+
+void texPat(Pat *ob)
+{
+    if (ob->pat_type == VARP)
+        texVar(ob->u.var_);
+    else if (ob->pat_type == NILP)
+        printf("[]");
+    else if (ob->pat_type == CONSP)
+        texConsp(ob->u.consp_);
+    else
+        printf("\\_");
+    return;
+}
+
+void texClauses(Clauses *ob)
+{
+    texPat(ob->pat_);
+    printf(" \\to ");
+    texExp(ob->exp_);
+    if (ob->next != NULL)
+    {
+        printf(" | ");
+        texClauses(ob->next);
+    }
     return;
 }
 
@@ -389,6 +427,26 @@ void texEval(Eval *ob)
     return;
 }
 
+void texPatMatch(PatMatch *ob)
+{
+    if (ob->match)
+    {
+        texPat(ob->pat_);
+        printf(" ~{\\rm matches}~ ");
+        texVal(ob->val_);
+        printf(" ~{\\rm when}~( ");
+        texEnv(ob->env_);
+        printf(" )");
+    }
+    else
+    {
+        texPat(ob->pat_);
+        printf(" ~{\\rm doesn't~match}~ ");
+        texVal(ob->val_);
+    }
+    return;
+}
+
 void texCncl(Cncl *ob)
 {
     int n = texAsmp(ob->asmp_);
@@ -406,12 +464,14 @@ void texCncl(Cncl *ob)
         printf("\\BinaryInfC{$");
     else if (n == 3)
         printf("\\TrinaryInfC{$");
+
     if (ob->cncl_type == INFR)
         texInfr(ob->u.infr_);
-    else
+    else if (ob->cncl_type == EVAL)
         texEval(ob->u.eval_);
+    else
+        texPatMatch(ob->u.patmatch_);
     printf("$}\n");
 
     return;
 }
-*/
