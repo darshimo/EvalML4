@@ -316,7 +316,7 @@ int cmpMatch(Match *ob1, Match *ob2)
 #endif
     if (cmpExp(ob1->exp_, ob2->exp_))
         return 1;
-    if (cmpExp(ob1->clauses_, ob2->clauses_))
+    if (cmpClauses(ob1->clauses_, ob2->clauses_))
         return 1;
     return 0;
 }
