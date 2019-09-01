@@ -36,7 +36,6 @@ Consp *readConsp(char *, char *);
 Pat *readPat(char *);
 Clauses *readClauses(char *);
 Exp *readExp(char *);
-Infr *readInfr(char *);
 Eval *readEval(char *);
 Cncl *readCncl(char *);
 
@@ -1148,55 +1147,6 @@ Eval *readEval(char *str)
     eval_ob->exp_ = readExp(str2);
 
     return eval_ob;
-}
-
-Infr *readInfr(char *str)
-{
-#ifdef DBG_READ
-    printf("infr: %s\n", str);
-#endif
-    Infr *infr_ob = (Infr *)malloc(sizeof(Infr));
-
-    char *tp;
-
-    tp = strtok(str, " ");
-    infr_ob->int1 = atoi(tp);
-
-    tp = strtok(NULL, " ");
-    if (strcmp(tp, "plus") == 0)
-    {
-        infr_ob->infr_type = PLUS;
-    }
-    else if (strcmp(tp, "minus") == 0)
-    {
-        infr_ob->infr_type = MINUS;
-    }
-    else if (strcmp(tp, "times") == 0)
-    {
-        infr_ob->infr_type = TIMES;
-    }
-    else
-    {
-        infr_ob->infr_type = LT;
-        tp = strtok(NULL, " ");
-    }
-
-    if (strstr(tp, "is") == NULL)
-    {
-        infr_ob->val_ = NULL;
-    }
-    else
-    {
-        tp = strtok(NULL, " ");
-        infr_ob->int2 = atoi(tp);
-
-        tp = strtok(NULL, " ");
-
-        tp = strtok(NULL, " ");
-        infr_ob->val_ = readVal(tp);
-    }
-
-    return infr_ob;
 }
 
 Cncl *readCncl(char *str)
