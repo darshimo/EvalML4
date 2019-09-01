@@ -10,8 +10,6 @@
 #include <stdio.h>
 #endif
 
-/*
-
 Int *copyInt(Int *);
 Bool *copyBool(Bool *);
 Clsr *copyClsr(Clsr *);
@@ -28,6 +26,9 @@ App *copyApp(App *);
 LetRec *copyLetRec(LetRec *);
 Conse *copyConse(Conse *);
 Match *copyMatch(Match *);
+Consp *copyConsp(Consp *);
+Pat *copyPat(Pat *);
+Clauses *copyClauses(Clauses *);
 Exp *copyExp(Exp *);
 
 Int *copyInt(Int *sample)
@@ -229,11 +230,50 @@ Match *copyMatch(Match *sample)
     printf("copyMatch start\n");
 #endif
     Match *ob = (Match *)malloc(sizeof(Match));
-    ob->exp1_ = copyExp(sample->exp1_);
-    ob->x = copyVar(sample->x);
-    ob->y = copyVar(sample->y);
-    ob->exp2_ = copyExp(sample->exp2_);
-    ob->exp3_ = copyExp(sample->exp3_);
+    ob->exp_ = copyExp(sample->exp_);
+    ob->clauses_ = copyClauses(sample->clauses_);
+    return ob;
+}
+
+Consp *copyConsp(Consp *sample)
+{
+#ifdef DBG_CP
+    printf("copyConsp start\n");
+#endif
+    Consp *ob = (Consp *)malloc(sizeof(Consp));
+    ob->pat1_ = copyPat(sample->pat1_);
+    ob->pat2_ = copyPat(sample->pat2_);
+    return ob;
+}
+
+Pat *copyPat(Pat *sample)
+{
+#ifdef DBG_CP
+    printf("copyPat start\n");
+#endif
+    Pat *ob = (Pat *)malloc(sizeof(Pat));
+    ob->pat_type = sample->pat_type;
+    if (ob->pat_type == VARP)
+    {
+        ob->u.var_ = copyVar(sample->u.var_);
+    }
+    else if (ob->pat_type == CONSP)
+    {
+        ob->u.consp_ = sample->u.consp_;
+    }
+}
+
+Clauses *copyClauses(Clauses *sample)
+{
+    if (sample == NULL)
+        return NULL;
+#ifdef DBG_CP
+    printf("copyClauses start\n");
+#endif
+    Clauses *ob = (Clauses *)malloc(sizeof(Clauses));
+    ob->pat_ = copyPat(sample->pat_);
+    ob->exp_ = copyExp(sample->exp_);
+    ob->next = copyClauses(sample->next);
     return ob;
 }
 
@@ -268,4 +308,3 @@ Exp *copyExp(Exp *sample)
         ob->u.match_ = copyMatch(sample->u.match_);
     return ob;
 }
-*/
