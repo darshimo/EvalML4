@@ -5,6 +5,8 @@
 #define DBG_CMP
 #endif
 
+/*
+
 int cmpInt(Int *, Int *);
 int cmpBool(Bool *, Bool *);
 int cmpClsr(Clsr *, Clsr *);
@@ -343,3 +345,4 @@ int cmpExp(Exp *ob1, Exp *ob2)
         cmpMatch(ob1->u.match_, ob2->u.match_);
     return 0;
 }
+*/

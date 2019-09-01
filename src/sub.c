@@ -79,6 +79,7 @@ void writeRuleName(Cncl *cncl_ob)
     return;
 }
 
+/*
 Val *getVal(Env *eps, Var *x)
 {
     if (eps == NULL)
@@ -87,3 +88,4 @@ Val *getVal(Env *eps, Var *x)
         return eps->val_;
     return getVal(eps->prev, x);
 }
+*/

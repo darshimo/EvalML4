@@ -1,6 +1,8 @@
 #include "param.h"
 #include <stdio.h>
 
+/*
+
 void texInt(Int *);
 void texBool(Bool *);
 void texClsr(Clsr *);
@@ -412,3 +414,4 @@ void texCncl(Cncl *ob)
 
     return;
 }
+*/

@@ -17,6 +17,9 @@ void debugApp(App *, int);
 void debugLetRec(LetRec *, int);
 void debugConse(Conse *, int);
 void debugMatch(Match *, int);
+void debugConsp(Consp *, int);
+void debugPat(Pat *, int);
+void debugClauses(Clauses *, int);
 void debugExp(Exp *, int);
 void debugInfr(Infr *, int);
 void debugEval(Eval *, int);
@@ -114,6 +117,13 @@ void debugVal(Val *ob, int d)
     {
         debugConsv(ob->u.consv_, d + 1);
     }
+    else // NIL_
+    {
+        tree(d + 1);
+        printf("nilv\n");
+        tree(d + 2);
+        printf("[]\n");
+    }
     return;
 };
 
@@ -204,11 +214,62 @@ void debugMatch(Match *ob, int d)
 {
     tree(d);
     printf("match\n");
-    debugExp(ob->exp1_, d + 1);
-    debugExp(ob->exp2_, d + 1);
-    debugVar(ob->x, d + 1);
-    debugVar(ob->y, d + 1);
-    debugExp(ob->exp3_, d + 1);
+    debugExp(ob->exp_, d + 1);
+    //tree(d + 1);
+    //printf("clauses\n");
+    debugClauses(ob->clauses_, d + 1);
+    return;
+}
+
+void debugConsp(Consp *ob, int d)
+{
+    tree(d);
+    printf("consp\n");
+    debugPat(ob->pat1_, d + 1);
+    debugPat(ob->pat2_, d + 1);
+    return;
+}
+
+void debugPat(Pat *ob, int d)
+{
+    tree(d);
+    printf("pat\n");
+    if (ob->pat_type == VARP)
+    {
+        debugVar(ob->u.var_, d + 1);
+    }
+    else if (ob->pat_type == NILP)
+    {
+        tree(d + 1);
+        printf("nil\n");
+        tree(d + 2);
+        printf("[]\n");
+    }
+    else if (ob->pat_type == CONSP)
+    {
+        debugConsp(ob->u.consp_, d + 1);
+    }
+    else // WILDP
+    {
+        tree(d + 1);
+        printf("wild\n");
+        tree(d + 2);
+        printf("_\n");
+    }
+    return;
+}
+
+void debugClauses(Clauses *ob, int d)
+{
+    if (ob == NULL)
+    {
+        return;
+    }
+    tree(d);
+    printf("clauses\n");
+    debugPat(ob->pat_, d + 1);
+    debugExp(ob->exp_, d + 1);
+    debugClauses(ob->next, d + 1);
     return;
 }
 
@@ -259,6 +320,13 @@ void debugExp(Exp *ob, int d)
     else if (ob->exp_type == MATCH)
     {
         debugMatch(ob->u.match_, d + 1);
+    }
+    else // NIL
+    {
+        tree(d + 1);
+        printf("nil\n");
+        tree(d + 2);
+        printf("[]\n");
     }
     return;
 };

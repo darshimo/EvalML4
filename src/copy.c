@@ -10,6 +10,8 @@
 #include <stdio.h>
 #endif
 
+/*
+
 Int *copyInt(Int *);
 Bool *copyBool(Bool *);
 Clsr *copyClsr(Clsr *);
@@ -266,3 +268,4 @@ Exp *copyExp(Exp *sample)
         ob->u.match_ = copyMatch(sample->u.match_);
     return ob;
 }
+*/

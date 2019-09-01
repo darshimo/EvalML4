@@ -58,6 +58,14 @@ typedef enum
 } ExpType;
 
 typedef enum
+{ // pat type
+    VARP,
+    NILP,
+    CONSP,
+    WILDP,
+} PatType;
+
+typedef enum
 { // infr type
     PLUS,
     MINUS,
@@ -83,6 +91,10 @@ struct App_;
 struct LetRec_;
 struct Conse_;
 struct Match_;
+
+struct Consp_;
+struct Pat_;
+struct Clauses_;
 
 struct Exp_;
 
@@ -197,12 +209,31 @@ typedef struct Conse_
 
 typedef struct Match_
 {
-    struct Exp_ *exp1_;
-    struct Exp_ *exp2_;
-    struct Var_ *x;
-    struct Var_ *y;
-    struct Exp_ *exp3_;
+    struct Exp_ *exp_;
+    struct Clauses_ *clauses_;
 } Match;
+
+typedef struct Consp_
+{
+    struct Pat_ *pat1_;
+    struct Pat_ *pat2_;
+} Consp;
+
+typedef struct Pat_
+{
+    PatType pat_type;
+    union {
+        struct Var_ *var_;
+        struct Consp_ *consp_;
+    } u;
+} Pat;
+
+typedef struct Clauses_
+{
+    struct Pat_ *pat_;
+    struct Exp_ *exp_;
+    struct Clauses_ *next;
+} Clauses;
 
 typedef struct Exp_
 {

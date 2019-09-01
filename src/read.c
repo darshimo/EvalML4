@@ -32,6 +32,9 @@ App *readApp(char *);
 LetRec *readLetRec(char *);
 Conse *readConse(char *, char *);
 Match *readMatch(char *);
+Consp *readConsp(char *, char *);
+Pat *readPat(char *);
+Clauses *readClauses(char *);
 Exp *readExp(char *);
 Infr *readInfr(char *);
 Eval *readEval(char *);
@@ -708,8 +711,10 @@ Match *readMatch(char *str)
 #endif
     Match *ob = (Match *)malloc(sizeof(Match));
 
-    char *str1, *str2, *str3, *str4, *str5;
-    int i, count;
+    //char *str1, *str2, *str3, *str4, *str5;
+    //int i, count;
+    char *str1, *str2;
+    int count;
 
     str += strcspn(str, " ");
     str += strspn(str, " ");
@@ -747,13 +752,12 @@ Match *readMatch(char *str)
     *str = '\0';
     str++;
 
-    for (i = 0; i < 3; i++)
-    {
-        str += strcspn(str, " ");
-        str += strspn(str, " ");
-    }
+    str += strcspn(str, " ");
+    str += strspn(str, " ");
+
     str2 = str;
 
+    /*
     count = 0;
     while (1)
     {
@@ -802,12 +806,136 @@ Match *readMatch(char *str)
 
     str += strspn(str, " ");
     str5 = str;
+    */
 
-    ob->exp1_ = readExp(str1);
-    ob->exp2_ = readExp(str2);
+    ob->exp_ = readExp(str1);
+    ob->clauses_ = readClauses(str2);
+
+    /*
     ob->x = readVar(str3);
     ob->y = readVar(str4);
     ob->exp3_ = readExp(str5);
+    */
+
+    return ob;
+}
+
+Consp *readConsp(char *str1, char *str2)
+{
+#ifdef DBG_READ
+    printf("consp : %s and %s\n", str1, str2);
+#endif
+    Consp *ob = (Consp *)malloc(sizeof(Consp));
+
+    ob->pat1_ = readPat(str1);
+    ob->pat2_ = readPat(str2);
+
+    return ob;
+}
+
+Pat *readPat(char *str)
+{
+#ifdef DBG_READ
+    printf("pat : %s\n", str);
+#endif
+    Pat *ob = (Pat *)malloc(sizeof(Pat));
+
+    char *tmp = strstr(str, "::");
+    if (tmp == NULL)
+    {
+        if (*str == '_')
+        {
+            ob->pat_type = WILDP;
+        }
+        else if (*str == '[')
+        {
+            ob->pat_type = NILP;
+        }
+        else
+        {
+            ob->pat_type = VARP;
+            ob->u.var_ = readVar(str);
+        }
+    }
+    else if (*str != '(')
+    {
+        *tmp = '\0';
+        tmp += 2;
+        tmp += strspn(tmp, " ");
+        ob->pat_type = CONSP;
+        ob->u.consp_ = readConsp(str, tmp);
+    }
+    else
+    {
+        tmp = str;
+        char *tmp2;
+        int count = 0;
+        while (1)
+        {
+            tmp += strcspn(tmp, "():");
+            if (*tmp == '(')
+            {
+                count++;
+            }
+            else if (*tmp == ')')
+            {
+                tmp2 = tmp;
+                count--;
+            }
+            else if (*tmp == ':')
+            {
+                if (count == 0)
+                {
+                    break;
+                }
+            }
+            else
+            {
+                error("pat");
+            }
+            tmp++;
+        }
+
+        str++;
+        str += strspn(str, " ");
+        *tmp2 = '\0';
+        tmp += 2;
+        tmp += strspn(tmp, " ");
+        ob->pat_type = CONSP;
+        ob->u.consp_ = readConsp(str, tmp);
+    }
+
+    return ob;
+}
+
+Clauses *readClauses(char *str)
+{
+    if (str == NULL)
+    {
+        return NULL;
+    }
+#ifdef DBG_READ
+    printf("clauses : %s\n", str);
+#endif
+    Clauses *ob = (Clauses *)malloc(sizeof(Clauses));
+
+    char *str1 = str;
+    char *str2 = strstr(str1, "->");
+    *str2 = '\0';
+    str2 += 2;
+    str2 += strspn(str2, " ");
+    char *str3 = strchr(str2, '|');
+
+    if (str3 != NULL)
+    {
+        *str3 = '\0';
+        str3++;
+        str3 += strspn(str3, " ");
+    }
+
+    ob->pat_ = readPat(str1);
+    ob->exp_ = readExp(str2);
+    ob->next = readClauses(str3);
 
     return ob;
 }
@@ -859,14 +987,25 @@ Exp *readExp(char *str)
     Exp *ob = (Exp *)malloc(sizeof(Exp));
 
     if (strncmp(str, "[]", 2) == 0)
-    {
+    { //when exp is nil or conse
         char *tmp = str + 2;
         tmp += strspn(tmp, " ");
-        if (*tmp != '\0')
+        if (*tmp == '\0')
+        {
+            ob->exp_type = NIL;
+        }
+        else if (*tmp == ':')
+        {
+            *tmp = '\0';
+            tmp += 2;
+            tmp += strspn(tmp, " ");
+            ob->exp_type = CONS;
+            ob->u.conse_ = readConse(str, tmp);
+        }
+        else
         {
             error("not nil");
         }
-        ob->exp_type = NIL;
     }
     else if (strncmp(str, "let rec ", 8) == 0)
     { //when exp is letrec
