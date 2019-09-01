@@ -2,6 +2,7 @@
 #include "param.h"
 
 int cmpVar(Var *, Var *);
+Env *copyEnv(Env *);
 void error(char *);
 
 void ind(int d)
