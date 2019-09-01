@@ -7,8 +7,6 @@
 #define DBG_DRV
 #endif
 
-/*
-
 void error(char *);
 Int *copyInt(Int *);
 Bool *copyBool(Bool *);
@@ -16,8 +14,13 @@ Exp *copyExp(Exp *);
 Env *copyEnv(Env *);
 Val *copyVal(Val *);
 Var *copyVar(Var *);
+Pat *copyPat(Pat *);
+Clauses *copyClauses(Clauses *);
 int cmpVar(Var *, Var *);
 Val *getVal(Env *, Var *);
+void freeCncl(Cncl *ob);
+Env *linkEnv(Env *, Env *);
+Env *unionEnv(Env *, Env *);
 
 #ifdef DBG_DRV
 void writeInt(Int *);
@@ -30,6 +33,7 @@ void writeFun(Fun *);
 void writeApp(App *);
 void writeLetRec(LetRec *);
 void writeExp(Exp *);
+void writePat(Pat *);
 void ind(int);
 #endif
 
@@ -520,7 +524,6 @@ void E_Nil(Cncl *cncl_ob, int d)
 #endif
     cncl_ob->rule_type = E_NIL;
     Asmp *asmp_ob = NULL;
-    ;
     Val *val_ob = (Val *)malloc(sizeof(Val));
     val_ob->val_type = NIL_;
     cncl_ob->asmp_ = asmp_ob;
@@ -573,7 +576,8 @@ void E_Cons(Cncl *cncl_ob, int d)
     return;
 }
 
-void E_Match(Cncl *cncl_ob, int d)
+/*
+void E_Matche(Cncl *cncl_ob, int d)
 {
 #ifdef DBG_DRV
     ind(d);
@@ -634,6 +638,203 @@ void E_Match(Cncl *cncl_ob, int d)
     cncl_ob->u.eval_->val_ = val_ob;
     return;
 }
+*/
+
+void E_Match(Cncl *cncl_ob, int d)
+{
+#ifdef DBG_DRV
+    ind(d);
+    printf("E-Match: ");
+    writeEnv(cncl_ob->u.eval_->env_);
+    printf(" |- ");
+    writeExp(cncl_ob->u.eval_->exp_);
+    printf("\n");
+#endif
+
+    if (cncl_ob->u.eval_->exp_->u.match_->clauses_ == NULL)
+        error("doesn't match any pattern");
+
+    Env *eps = cncl_ob->u.eval_->env_;
+    Exp *e0 = cncl_ob->u.eval_->exp_->u.match_->exp_;
+    Pat *p = cncl_ob->u.eval_->exp_->u.match_->clauses_->pat_;
+    Exp *e = cncl_ob->u.eval_->exp_->u.match_->clauses_->exp_;
+    Clauses *c = cncl_ob->u.eval_->exp_->u.match_->clauses_->next;
+
+    Asmp *asmp_ob = (Asmp *)malloc(sizeof(Asmp));
+    asmp_ob->next = (Asmp *)malloc(sizeof(Asmp));
+    asmp_ob->next->next = (Asmp *)malloc(sizeof(Asmp));
+    asmp_ob->next->next->next = NULL;
+
+    Cncl *cncl_ob1 = (Cncl *)malloc(sizeof(Cncl));
+    cncl_ob1->cncl_type = EVAL;
+    cncl_ob1->u.eval_ = (Eval *)malloc(sizeof(Eval));
+    cncl_ob1->u.eval_->env_ = copyEnv(eps);
+    cncl_ob1->u.eval_->exp_ = copyExp(e0);
+    derivation(cncl_ob1, d + 1);
+
+    Cncl *cncl_ob2 = (Cncl *)malloc(sizeof(Cncl));
+    cncl_ob2->cncl_type = PATMATCH;
+    cncl_ob2->u.patmatch_ = (PatMatch *)malloc(sizeof(PatMatch));
+    cncl_ob2->u.patmatch_->pat_ = copyPat(p);
+    cncl_ob2->u.patmatch_->val_ = copyVal(cncl_ob1->u.eval_->val_);
+    derivation(cncl_ob2, d + 1);
+
+    Cncl *cncl_ob3 = (Cncl *)malloc(sizeof(Cncl));
+    cncl_ob3->cncl_type = EVAL;
+    cncl_ob3->u.eval_ = (Eval *)malloc(sizeof(Eval));
+
+    if (cncl_ob2->u.patmatch_->match)
+    {
+        if (c == NULL)
+            cncl_ob->rule_type = E_MATCHM1;
+        else
+            cncl_ob->rule_type = E_MATCHM2;
+        cncl_ob3->u.eval_->env_ = linkEnv(eps, cncl_ob2->u.patmatch_->env_);
+        cncl_ob3->u.eval_->exp_ = copyExp(e);
+    }
+    else
+    {
+        cncl_ob->rule_type = E_MATCHN;
+        cncl_ob3->u.eval_->env_ = copyEnv(eps);
+        cncl_ob3->u.eval_->exp_ = (Exp *)malloc(sizeof(Exp));
+        cncl_ob3->u.eval_->exp_->exp_type = MATCH;
+        cncl_ob3->u.eval_->exp_->u.match_ = (Match *)malloc(sizeof(Match));
+        cncl_ob3->u.eval_->exp_->u.match_->exp_ = copyExp(e0);
+        cncl_ob3->u.eval_->exp_->u.match_->clauses_ = copyClauses(c);
+    }
+
+    derivation(cncl_ob3, d + 1);
+
+    asmp_ob->cncl_ = cncl_ob1;
+    asmp_ob->next->cncl_ = cncl_ob2;
+    asmp_ob->next->next->cncl_ = cncl_ob3;
+
+    cncl_ob->asmp_ = asmp_ob;
+    cncl_ob->u.eval_->val_ = copyVal(cncl_ob3->u.eval_->val_);
+
+    return;
+}
+
+void M_Pat(Cncl *cncl_ob, int d)
+{
+#ifdef DBG_DRV
+    ind(d);
+    printf("M-Pat: ");
+    writePat(cncl_ob->u.patmatch_->pat_);
+    printf(" does match or not ");
+    writeVal(cncl_ob->u.patmatch_->val_);
+    printf("\n");
+#endif
+
+    /* give
+ asmp, ruletype
+ match, env
+*/
+
+    Asmp *asmp_ob;
+    if (cncl_ob->u.patmatch_->pat_->pat_type == VARP)
+    {
+        asmp_ob = NULL;
+        cncl_ob->rule_type = M_VAR;
+        cncl_ob->u.patmatch_->match = 1;
+        Env *env_ob = (Env *)malloc(sizeof(Env));
+        env_ob->prev = NULL;
+        env_ob->var_ = copyVar(cncl_ob->u.patmatch_->pat_->u.var_);
+        env_ob->val_ = copyVal(cncl_ob->u.patmatch_->val_);
+        cncl_ob->u.patmatch_->env_ = env_ob;
+    }
+    else if (cncl_ob->u.patmatch_->pat_->pat_type == WILDP)
+    {
+        asmp_ob = NULL;
+        cncl_ob->rule_type = M_WILD;
+        cncl_ob->u.patmatch_->match = 1;
+        cncl_ob->u.patmatch_->env_ = NULL;
+    }
+    else if (cncl_ob->u.patmatch_->pat_->pat_type == NILP)
+    {
+        asmp_ob = NULL;
+        cncl_ob->u.patmatch_->env_ = NULL;
+        if (cncl_ob->u.patmatch_->val_->val_type == NIL_)
+        {
+            cncl_ob->u.patmatch_->match = 1;
+            cncl_ob->rule_type = M_NIL;
+        }
+        else
+        {
+            cncl_ob->u.patmatch_->match = 0;
+            cncl_ob->rule_type = NM_CONSNIL;
+        }
+    }
+    else // CONSP
+    {
+        if (cncl_ob->u.patmatch_->val_->val_type != CONS_)
+        {
+            asmp_ob = NULL;
+            cncl_ob->rule_type = NM_NILCONS;
+            cncl_ob->u.patmatch_->match = 0;
+            cncl_ob->u.patmatch_->env_ = NULL;
+        }
+        else
+        {
+            asmp_ob = (Asmp *)malloc(sizeof(Asmp));
+            Pat *p1 = cncl_ob->u.patmatch_->pat_->u.consp_->pat1_;
+            Pat *p2 = cncl_ob->u.patmatch_->pat_->u.consp_->pat2_;
+            Val *v1 = cncl_ob->u.patmatch_->val_->u.consv_->val1_;
+            Val *v2 = cncl_ob->u.patmatch_->val_->u.consv_->val2_;
+
+            Cncl *cncl_ob1 = (Cncl *)malloc(sizeof(Cncl));
+            cncl_ob1 = (Cncl *)malloc(sizeof(Cncl));
+            cncl_ob1->cncl_type = PATMATCH;
+            cncl_ob1->u.patmatch_ = (PatMatch *)malloc(sizeof(PatMatch));
+            cncl_ob1->u.patmatch_->pat_ = copyPat(p1);
+            cncl_ob1->u.patmatch_->val_ = copyVal(v1);
+            derivation(cncl_ob1, d + 1);
+            if (cncl_ob1->u.patmatch_->match == 0)
+            { // p1 doesn't match v1
+                asmp_ob->cncl_ = cncl_ob1;
+                asmp_ob->next = NULL;
+                cncl_ob->rule_type = NM_CONSCONSL;
+                cncl_ob->u.patmatch_->match = 0;
+                cncl_ob->u.patmatch_->env_ = NULL;
+            }
+            else
+            {
+                Cncl *cncl_ob2 = (Cncl *)malloc(sizeof(Cncl));
+                cncl_ob2 = (Cncl *)malloc(sizeof(Cncl));
+                cncl_ob2->cncl_type = PATMATCH;
+                cncl_ob2->u.patmatch_ = (PatMatch *)malloc(sizeof(PatMatch));
+                cncl_ob2->u.patmatch_->pat_ = copyPat(p2);
+                cncl_ob2->u.patmatch_->val_ = copyVal(v2);
+                derivation(cncl_ob2, d + 1);
+                if (cncl_ob2->u.patmatch_->match == 0)
+                { // p2 doesn't match v2
+                    //freeCncl(cncl_ob1);
+                    asmp_ob->cncl_ = cncl_ob2;
+                    asmp_ob->next = NULL;
+                    cncl_ob->rule_type = NM_CONSCONSR;
+                    cncl_ob->u.patmatch_->match = 0;
+                    cncl_ob->u.patmatch_->env_ = NULL;
+                }
+                else
+                {
+                    Env *env_ob1 = cncl_ob1->u.patmatch_->env_;
+                    Env *env_ob2 = cncl_ob2->u.patmatch_->env_;
+                    asmp_ob->next = (Asmp *)malloc(sizeof(Asmp));
+                    asmp_ob->next->next = NULL;
+                    asmp_ob->cncl_ = cncl_ob1;
+                    asmp_ob->next->cncl_ = cncl_ob2;
+                    cncl_ob->rule_type = M_CONS;
+                    cncl_ob->u.patmatch_->match = 1;
+                    cncl_ob->u.patmatch_->env_ = unionEnv(env_ob1, env_ob2);
+                }
+            }
+        }
+    }
+
+    cncl_ob->asmp_ = asmp_ob;
+
+    return;
+}
 
 void derivation(Cncl *cncl_ob, int d)
 {
@@ -649,7 +850,7 @@ void derivation(Cncl *cncl_ob, int d)
         else
             B_Lt(cncl_ob, d);
     }
-    else
+    else if (cncl_ob->cncl_type == EVAL)
     {
         ExpType tmp = cncl_ob->u.eval_->exp_->exp_type;
         if (tmp == INT)
@@ -677,6 +878,9 @@ void derivation(Cncl *cncl_ob, int d)
         else
             E_Match(cncl_ob, d);
     }
+    else
+    {
+        M_Pat(cncl_ob, d);
+    }
     return;
 }
-*/
