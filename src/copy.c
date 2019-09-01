@@ -261,6 +261,7 @@ Pat *copyPat(Pat *sample)
     {
         ob->u.consp_ = sample->u.consp_;
     }
+    return ob;
 }
 
 Clauses *copyClauses(Clauses *sample)
