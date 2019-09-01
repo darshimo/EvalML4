@@ -105,3 +105,58 @@ Val *getVal(Env *eps, Var *x)
         return eps->val_;
     return getVal(eps->prev, x);
 }
+
+Env *linkEnv(Env *ob1, Env *ob2)
+{
+    Env *tmp1 = copyEnv(ob1);
+    Env *tmp2 = copyEnv(ob2);
+
+    if (tmp2 == NULL)
+    {
+        return tmp1;
+    }
+    if (tmp1 == NULL)
+    {
+        return tmp2;
+    }
+
+    Env *ob = tmp2;
+
+    while (tmp2->prev != NULL)
+    {
+        tmp2 = tmp2->prev;
+    }
+    tmp2->prev = tmp1;
+
+    return ob;
+}
+
+int interCheckEnv(Env *ob1, Env *ob2)
+{ // having common variables, return 1
+    while (ob1 != NULL)
+    {
+        Var *var1 = ob1->var_;
+        while (ob2 != NULL)
+        {
+            Var *var2 = ob2->var_;
+
+            if (cmpVar(var1, var2) == 0)
+                return 1;
+
+            ob2 = ob2->prev;
+        }
+        ob1 = ob1->prev;
+    }
+
+    return 0;
+}
+
+Env *unionEnv(Env *ob1, Env *ob2)
+{
+    if (interCheckEnv(ob1, ob2))
+    {
+        error("envs have common variables.");
+    }
+
+    return linkEnv(ob1, ob2);
+}
