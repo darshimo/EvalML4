@@ -783,7 +783,6 @@ void M_Pat(Cncl *cncl_ob, int d)
             Val *v2 = cncl_ob->u.patmatch_->val_->u.consv_->val2_;
 
             Cncl *cncl_ob1 = (Cncl *)malloc(sizeof(Cncl));
-            cncl_ob1 = (Cncl *)malloc(sizeof(Cncl));
             cncl_ob1->cncl_type = PATMATCH;
             cncl_ob1->u.patmatch_ = (PatMatch *)malloc(sizeof(PatMatch));
             cncl_ob1->u.patmatch_->pat_ = copyPat(p1);
@@ -800,7 +799,6 @@ void M_Pat(Cncl *cncl_ob, int d)
             else
             {
                 Cncl *cncl_ob2 = (Cncl *)malloc(sizeof(Cncl));
-                cncl_ob2 = (Cncl *)malloc(sizeof(Cncl));
                 cncl_ob2->cncl_type = PATMATCH;
                 cncl_ob2->u.patmatch_ = (PatMatch *)malloc(sizeof(PatMatch));
                 cncl_ob2->u.patmatch_->pat_ = copyPat(p2);
@@ -808,7 +806,7 @@ void M_Pat(Cncl *cncl_ob, int d)
                 derivation(cncl_ob2, d + 1);
                 if (cncl_ob2->u.patmatch_->match == 0)
                 { // p2 doesn't match v2
-                    //freeCncl(cncl_ob1);
+                    freeCncl(cncl_ob1);
                     asmp_ob->cncl_ = cncl_ob2;
                     asmp_ob->next = NULL;
                     cncl_ob->rule_type = NM_CONSCONSR;

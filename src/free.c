@@ -9,9 +9,6 @@
 #include <stdio.h>
 #endif
 
-/*
-
-
 void freeInt(Int *);
 void freeBool(Bool *);
 void freeClsr(Clsr *);
@@ -28,10 +25,14 @@ void freeApp(App *);
 void freeLetRec(LetRec *);
 void freeConse(Conse *);
 void freeMatch(Match *);
+void freeConsp(Consp *);
+void freePat(Pat *);
+void freeClauses(Clauses *);
 void freeExp(Exp *);
 void freeAsmp(Asmp *);
 void freeInfr(Infr *);
 void freeEval(Eval *);
+void freePatMatch(PatMatch *);
 void freeCncl(Cncl *);
 
 void freeInt(Int *ob)
@@ -197,6 +198,7 @@ void freeLetRec(LetRec *ob)
     freeVar(ob->arg);
     freeExp(ob->exp1_);
     freeExp(ob->exp2_);
+    free(ob);
     return;
 }
 
@@ -207,6 +209,7 @@ void freeConse(Conse *ob)
 #endif
     freeExp(ob->exp1_);
     freeExp(ob->exp2_);
+    free(ob);
     return;
 }
 
@@ -215,11 +218,53 @@ void freeMatch(Match *ob)
 #ifdef DBG_FREE
     printf("free match\n");
 #endif
-    freeExp(ob->exp1_);
-    freeExp(ob->exp2_);
-    freeVar(ob->x);
-    freeVar(ob->y);
-    freeExp(ob->exp3_);
+    freeExp(ob->exp_);
+    freeClauses(ob->clauses_);
+    free(ob);
+    return;
+}
+
+void freeConsp(Consp *ob)
+{
+#ifdef DBG_FREE
+    printf("free consp\n");
+#endif
+    freePat(ob->pat1_);
+    freePat(ob->pat2_);
+    free(ob);
+    return;
+}
+
+void freePat(Pat *ob)
+{
+#ifdef DBG_FREE
+    printf("free pat\n");
+#endif
+    if (ob->pat_type == VARP)
+    {
+        printf("var\n");
+        freeVar(ob->u.var_);
+    }
+    else if (ob->pat_type == CONSP)
+    {
+        printf("consp\n");
+        freeConsp(ob->u.consp_);
+    }
+    free(ob);
+    return;
+}
+
+void freeClauses(Clauses *ob)
+{
+    if (ob == NULL)
+        return;
+#ifdef DBG_FREE
+    printf("free clauses\n");
+#endif
+    freePat(ob->pat_);
+    freeExp(ob->exp_);
+    freeClauses(ob->next);
+    free(ob);
     return;
 }
 
@@ -289,6 +334,18 @@ void freeEval(Eval *ob)
     return;
 }
 
+void freePatMatch(PatMatch *ob)
+{
+#ifdef DBG_FREE
+    printf("free patmatch\n");
+#endif
+    freePat(ob->pat_);
+    freeVal(ob->val_);
+    freeEnv(ob->env_);
+    free(ob);
+    return;
+}
+
 void freeCncl(Cncl *ob)
 {
 #ifdef DBG_FREE
@@ -297,9 +354,10 @@ void freeCncl(Cncl *ob)
     freeAsmp(ob->asmp_);
     if (ob->cncl_type == INFR)
         freeInfr(ob->u.infr_);
-    else
+    else if (ob->cncl_type == EVAL)
         freeEval(ob->u.eval_);
+    else
+        freePatMatch(ob->u.patmatch_);
     free(ob);
     return;
 }
-*/
