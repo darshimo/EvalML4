@@ -259,7 +259,7 @@ Pat *copyPat(Pat *sample)
     }
     else if (ob->pat_type == CONSP)
     {
-        ob->u.consp_ = sample->u.consp_;
+        ob->u.consp_ = copyConsp(sample->u.consp_);
     }
     return ob;
 }
