@@ -71,7 +71,7 @@ typedef enum
     VARP,
     NILP,
     CONSP,
-    WILDP,
+    WILDP
 } PatType;
 
 typedef enum
