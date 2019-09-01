@@ -1,9 +1,16 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "param.h"
 
 int cmpVar(Var *, Var *);
 Env *copyEnv(Env *);
-void error(char *);
+
+void error(char *msg)
+{
+    perror(msg);
+    exit(1);
+    return;
+}
 
 void ind(int d)
 {

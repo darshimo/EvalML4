@@ -87,8 +87,6 @@ int main(int argc, char *argv[])
     printf("debug complete.\n\n");
 #endif
 
-    /*
-
 #ifdef DBG_DRV
     printf("derivation start.\n");
 #endif
@@ -117,8 +115,6 @@ int main(int argc, char *argv[])
 #ifdef DBG_FREE
     printf("free complete.\n\n");
 #endif
-
-*/
 
     return 0;
 }

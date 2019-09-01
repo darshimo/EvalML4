@@ -241,15 +241,10 @@ void freePat(Pat *ob)
     printf("free pat\n");
 #endif
     if (ob->pat_type == VARP)
-    {
-        printf("var\n");
         freeVar(ob->u.var_);
-    }
     else if (ob->pat_type == CONSP)
-    {
-        printf("consp\n");
         freeConsp(ob->u.consp_);
-    }
+
     free(ob);
     return;
 }
