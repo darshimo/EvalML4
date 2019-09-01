@@ -1,5 +1,13 @@
 typedef enum
 { //rule type
+    M_VAR,
+    M_NIL,
+    M_CONS,
+    M_WILD,
+    NM_CONSNIL,
+    NM_NILCONS,
+    NM_CONSCONSL,
+    NM_CONSCONSR,
     E_INT,
     E_BOOL,
     E_IFT,
@@ -14,20 +22,22 @@ typedef enum
     E_APP,
     E_LETREC,
     E_APPREC,
+    E_NIL,
+    E_CONS,
+    E_MATCHM1,
+    E_MATCHM2,
+    E_MATCHN,
     B_PLUS,
     B_MINUS,
     B_TIMES,
-    B_LT,
-    E_NIL,
-    E_CONS,
-    E_MATCHNIL,
-    E_MATCHCONS
+    B_LT
 } RuleType;
 
 typedef enum
 { //cncl type
     INFR,
-    EVAL
+    EVAL,
+    PATMATCH
 } CnclType;
 
 typedef enum
@@ -53,8 +63,7 @@ typedef enum
     LETREC,
     NIL,
     CONS,
-    MATCH,
-
+    MATCH
 } ExpType;
 
 typedef enum
@@ -72,6 +81,12 @@ typedef enum
     TIMES,
     LT
 } InfrOpType;
+
+typedef enum
+{
+    TRUE,
+    FALSE
+} Bool;
 
 struct Int_;
 struct Bool_;
@@ -102,6 +117,7 @@ struct Asmp_;
 
 struct Infr_;
 struct Eval_;
+struct PatMatch_;
 
 struct Cncl_;
 
@@ -274,13 +290,22 @@ typedef struct Eval_
     struct Val_ *val_;
 } Eval;
 
+typedef struct PatMatch_
+{
+    struct Pat_ *pat_;
+    struct Val_ *val_;
+    struct Env_ *env_;
+    Bool match;
+} PatMatch;
+
 typedef struct Cncl_
 {
     CnclType cncl_type;
     RuleType rule_type;
     struct Asmp_ *asmp_;
     union {
-        Infr *infr_;
-        Eval *eval_;
+        struct Infr_ *infr_;
+        struct Eval_ *eval_;
+        struct PatMatch_ *patmatch_;
     } u;
 } Cncl;
