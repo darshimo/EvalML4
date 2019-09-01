@@ -32,7 +32,23 @@ void tree(int d)
 void writeRuleName(Cncl *cncl_ob)
 {
     RuleType tmp = cncl_ob->rule_type;
-    if (tmp == E_INT)
+    if (tmp == M_VAR)
+        printf("M-Var");
+    else if (tmp == M_NIL)
+        printf("M-Nil");
+    else if (tmp == M_CONS)
+        printf("M-Cons");
+    else if (tmp == M_WILD)
+        printf("M-Wild");
+    else if (tmp == NM_CONSNIL)
+        printf("NM-ConsNil");
+    else if (tmp == NM_NILCONS)
+        printf("NM-NilCons");
+    else if (tmp == NM_CONSCONSL)
+        printf("NM-ConsConsL");
+    else if (tmp == NM_CONSCONSR)
+        printf("NM-ConsConsR");
+    else if (tmp == E_INT)
         printf("E-Int");
     else if (tmp == E_BOOL)
         printf("E-Bool");
@@ -60,26 +76,27 @@ void writeRuleName(Cncl *cncl_ob)
         printf("E-LetRec");
     else if (tmp == E_APPREC)
         printf("E-AppRec");
+    else if (tmp == E_NIL)
+        printf("E-Nil");
+    else if (tmp == E_CONS)
+        printf("E-Cons");
+    else if (tmp == E_MATCHM1)
+        printf("E-MatchM1");
+    else if (tmp == E_MATCHM2)
+        printf("E-MatchM2");
+    else if (tmp == E_MATCHN)
+        printf("E-MatchN");
     else if (tmp == B_PLUS)
         printf("B-Plus");
     else if (tmp == B_MINUS)
         printf("B-Minus");
     else if (tmp == B_TIMES)
         printf("B-Times");
-    else if (tmp == B_LT)
-        printf("B-Lt");
-    else if (tmp == E_NIL)
-        printf("E-Nil");
-    else if (tmp == E_CONS)
-        printf("E-Cons");
-    else if (tmp == E_MATCHNIL)
-        printf("E-MatchNil");
     else
-        printf("E-MatchCons");
+        printf("B-Lt");
     return;
 }
 
-/*
 Val *getVal(Env *eps, Var *x)
 {
     if (eps == NULL)
@@ -88,4 +105,3 @@ Val *getVal(Env *eps, Var *x)
         return eps->val_;
     return getVal(eps->prev, x);
 }
-*/
