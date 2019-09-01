@@ -5,8 +5,6 @@
 #define DBG_CMP
 #endif
 
-/*
-
 int cmpInt(Int *, Int *);
 int cmpBool(Bool *, Bool *);
 int cmpClsr(Clsr *, Clsr *);
@@ -23,6 +21,9 @@ int cmpApp(App *, App *);
 int cmpLetRec(LetRec *, LetRec *);
 int cmpConse(Conse *, Conse *);
 int cmpMatch(Match *, Match *);
+int cmpConsp(Consp *, Consp *);
+int cmpPat(Pat *, Pat *);
+int cmpClauses(Clauses *, Clauses *);
 int cmpExp(Exp *, Exp *);
 
 #ifdef DBG_CMP
@@ -43,6 +44,9 @@ void writeApp(App *);
 void writeLetRec(LetRec *);
 void writeConse(Conse *);
 void writeMatch(Match *);
+void writeConsp(Consp *);
+void writePat(Pat *);
+void writeClauses(Clauses *);
 void writeExp(Exp *);
 #endif
 
@@ -55,7 +59,10 @@ int cmpInt(Int *ob1, Int *ob2)
     writeInt(ob2);
     printf(" :\n");
 #endif
-    return (ob1->i != ob2->i);
+    if (ob1->i == ob2->i)
+        return 0;
+
+    return 1;
 }
 
 int cmpBool(Bool *ob1, Bool *ob2)
@@ -67,7 +74,10 @@ int cmpBool(Bool *ob1, Bool *ob2)
     writeBool(ob2);
     printf(" :\n");
 #endif
-    return (ob1->b != ob2->b);
+    if (ob1->b == ob2->b)
+        return 0;
+
+    return 1;
 }
 
 int cmpClsr(Clsr *ob1, Clsr *ob2)
@@ -304,16 +314,65 @@ int cmpMatch(Match *ob1, Match *ob2)
     writeMatch(ob2);
     printf(" :\n");
 #endif
-    if (cmpExp(ob1->exp1_, ob2->exp1_))
+    if (cmpExp(ob1->exp_, ob2->exp_))
         return 1;
-    if (cmpExp(ob1->exp2_, ob2->exp2_))
+    if (cmpExp(ob1->clauses_, ob2->clauses_))
         return 1;
-    if (cmpVar(ob1->x, ob2->x))
+    return 0;
+}
+
+int cmpConsp(Consp *ob1, Consp *ob2)
+{
+#ifdef DBG_CMP
+    printf("cmpConsp: ");
+    writeConsp(ob1);
+    printf(" : ");
+    writeConsp(ob2);
+    printf(" :\n");
+#endif
+    if (cmpPat(ob1->pat1_, ob2->pat1_))
         return 1;
-    if (cmpVar(ob1->y, ob2->y))
+    if (cmpPat(ob1->pat2_, ob2->pat2_))
         return 1;
-    if (cmpExp(ob1->exp3_, ob2->exp3_))
+    return 0;
+}
+
+int cmpPat(Pat *ob1, Pat *ob2)
+{
+#ifdef DBG_CMP
+    printf("cmpPat: ");
+    writePat(ob1);
+    printf(" : ");
+    writePat(ob2);
+    printf(" :\n");
+#endif
+    if (ob1->pat_type != ob2->pat_type)
         return 1;
+    if (ob1->pat_type == VARP)
+        return cmpVar(ob1->u.var_, ob2->u.var_);
+    if (ob1->pat_type == CONSP)
+        return cmpConsp(ob1->u.consp_, ob2->u.consp_);
+    return 0;
+}
+
+int cmpClauses(Clauses *ob1, Clauses *ob2)
+{
+#ifdef DBG_CMP
+    printf("cmpClauses: ");
+    writeClauses(ob1);
+    printf(" : ");
+    writeClauses(ob2);
+    printf(" :\n");
+#endif
+    if (ob1 == NULL && ob2 == NULL)
+        return 0;
+    if (cmpPat(ob1->pat_, ob2->pat_))
+        return 1;
+    if (cmpExp(ob1->exp_, ob2->exp_))
+        return 1;
+    if (cmpClauses(ob1->next, ob2->next))
+        return 1;
+
     return 0;
 }
 
@@ -345,4 +404,3 @@ int cmpExp(Exp *ob1, Exp *ob2)
         cmpMatch(ob1->u.match_, ob2->u.match_);
     return 0;
 }
-*/
