@@ -82,12 +82,6 @@ typedef enum
     LT
 } InfrOpType;
 
-typedef enum
-{
-    TRUE,
-    FALSE
-} Bool;
-
 struct Int_;
 struct Bool_;
 struct Clsr_;
@@ -295,7 +289,7 @@ typedef struct PatMatch_
     struct Pat_ *pat_;
     struct Val_ *val_;
     struct Env_ *env_;
-    Bool match;
+    int match;
 } PatMatch;
 
 typedef struct Cncl_
