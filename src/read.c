@@ -1207,16 +1207,8 @@ Cncl *readCncl(char *str)
     Cncl *cncl_ob = (Cncl *)malloc(sizeof(Cncl));
 
     str += strspn(str, " ");
-    if (strstr(str, " plus ") == NULL && strstr(str, " minus ") == NULL && strstr(str, " times ") == NULL && strstr(str, " less ") == NULL)
-    {
-        cncl_ob->cncl_type = EVAL;
-        cncl_ob->u.eval_ = readEval(str);
-    }
-    else
-    {
-        cncl_ob->cncl_type = INFR;
-        cncl_ob->u.infr_ = readInfr(str);
-    }
+    cncl_ob->cncl_type = EVAL;
+    cncl_ob->u.eval_ = readEval(str);
 
     return cncl_ob;
 }
