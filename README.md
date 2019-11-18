@@ -28,7 +28,7 @@ $ make
 - Give file path as command line argument.
 
 	```sh
-	$ ./evalML4 problem/70
+	$ ./evalML4 path/to/file
 	```
 
 	Runing `make test`, you can get the answers for sample problems.
@@ -44,7 +44,6 @@ $ make
 ### Derivation Rules
 
 <img src="https://github.com/darshimo/EvalML4/blob/images/rules.png">
-
 
 ## Example
 
