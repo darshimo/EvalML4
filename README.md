@@ -41,7 +41,7 @@ $ make
 <img src="https://github.com/darshimo/EvalML4/blob/images/syntax.png" width="70%">
 </div>
 
-### Inference Rules
+### Derivation Rules
 
 <img src="https://github.com/darshimo/EvalML4/blob/images/rules.png">
 
